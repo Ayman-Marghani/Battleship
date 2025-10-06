@@ -39,17 +39,19 @@ class Gameboard {
   }
   receiveAttack(x, y) {
     if (x < 0 || x >= this.gameBoardMatrix.length || y < 0 || y >= this.gameBoardMatrix.length) {
-      return;
+      return null;
     }
     // Case 1: hit
     if (this.gameBoardMatrix[x][y] !== null) {
       // Call hit() on ship object
       this.gameBoardMatrix[x][y].hit();
       this.gameBoardMatrix[x][y] = true; // true represents a hit cell
+      return true;
     }
     // Case 2: miss
     else {
       this.gameBoardMatrix[x][y] = false; // false represents a miss cell
+      return false;
     }
   }
   isAllShipsSunk() {
