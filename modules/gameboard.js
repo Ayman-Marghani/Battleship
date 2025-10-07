@@ -1,5 +1,26 @@
 import Ship from "./ship";
 
+/**
+ * @class Gameboard
+ * @constructor Gameboard()
+ * @property {Array<Array<Cell>>} gameBoardMatrix - The 2D array representing the game board.
+ * @property {Array<Ship>} shipsArr - The array of ships placed on the game board.
+ * @method placeShips()
+ * Places ships on the game board based on the provided ship sizes.
+ * @returns {void}
+ * @method receiveAttack(x, y)
+ * Makes an attack on the game board at the specified coordinates.
+ * @param {number} x - The x-coordinate of the attack.
+ * @param {number} y - The y-coordinate of the attack.
+ * @returns {void}
+ * @method isAllShipsSunk()
+ * Checks if all ships have been sunk.
+ * @returns {boolean} True if all ships are sunk, false otherwise.
+ * @method display()
+ * Returns the current state of the game board as a 2D array of strings.
+ * @returns {Array<Array<String>>} 
+ */
+
 class Gameboard {
   
   constructor() {
@@ -12,9 +33,9 @@ class Gameboard {
   }
 
   placeShips() {
-    const shipsSizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1];
-    // Randomize and user input wil be used later
-    const shipsCords = [[5, 0], [7, 7], [0, 2], [3, 8], [0, 8], [8, 4], [3, 2], [3, 5], [5, 6], [8, 0]];
+    const shipsSizes = [5, 4, 3, 3, 2];
+    // TODO: Randomize and user input wil be used later
+    const shipsCords = [[5, 0], [0, 6], [3, 2], [8, 7], [9, 1]];
 
     for (let i = 0; i < shipsSizes.length; i++) {
       // Get current ship size
@@ -27,13 +48,7 @@ class Gameboard {
       // Place curShip on gameboard
       for (let count = 0; count < curSize; count++) {
         this.gameBoardMatrix[firstCord][secondCord] = curShip;
-        // If current ship is vertical increment firstCord
-        if (i % 2 === 1) {
-          firstCord++;
-        }
-        else {
-          secondCord++;
-        }
+        secondCord++;
       }
     }
   }
