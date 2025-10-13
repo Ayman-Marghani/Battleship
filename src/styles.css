@@ -1,0 +1,109 @@
+/*
+  Josh's Custom CSS Reset
+  https://www.joshwcomeau.com/css/custom-css-reset/
+*/
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+/* 3. Enable keyword animations */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  /* 4. Add accessible line-height */
+  line-height: 1.5;
+  /* 5. Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/*
+  10. Create a root stacking context
+*/
+#root, #__next {
+  isolation: isolate;
+}
+/************************************************************/
+/* General Styles */
+body {
+  text-align: center;
+}
+
+
+.boards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-items: right;
+  gap: 4rem;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 2rem);
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+}
+
+.second-board {
+  justify-self: left;
+}
+
+.cell {
+  height: 2rem;
+  width: auto;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.ship {
+  background-color: aqua;
+}
+
+.empty {
+  background-color: white;
+}
+
+.cell.hidden {
+  background-color: white;
+}
+
+.cell.hit {
+  background-color: red;
+}
+
+.cell.miss {
+  background-color: gray;
+}

@@ -31,6 +31,9 @@ class Player {
   isLoser() {
     return this.gameboard.isAllShipsSunk();
   }
+  getBoard() {
+    return this.gameboard.display();
+  }
 }
 
 export default Player;
