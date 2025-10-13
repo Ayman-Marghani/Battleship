@@ -1,87 +1,90 @@
 import Gameboard from "../modules/gameboard";
+import Ship from "../modules/ship";
 
-test("Test Gameboard with hit and miss cases", () => {
-  const game = new Gameboard();
-  // let matrix = game.display();
+describe("Gameboard Class", () => {
+  let game;
 
-  expect(game.display()).toEqual([ 
-    [ '-', '-', '-', '-', '-', '-', 'X', 'X', 'X', 'X' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', 'X', 'X', 'X', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ 'X', 'X', 'X', 'X', 'X', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', 'X', 'X', 'X' ],
-    [ '-', 'X', 'X', '-', '-', '-', '-', '-', '-', '-' ]
-  ]);
-  expect(game.isAllShipsSunk()).toBe(false);
+  beforeEach(() => {
+    game = new Gameboard();
+  });
 
-  // Miss case
-  game.receiveAttack(0, 0);
-  expect(game.display()).toEqual([ 
-    [ 'M', '-', '-', '-', '-', '-', 'X', 'X', 'X', 'X' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', 'X', 'X', 'X', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ 'X', 'X', 'X', 'X', 'X', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', 'X', 'X', 'X' ],
-    [ '-', 'X', 'X', '-', '-', '-', '-', '-', '-', '-' ]
-  ]);
+  test("should initialize with empty board", () => {
+    const emptyBoard = Array.from({ length: 10 }, () => Array(10).fill('-'));
+    expect(game.testMatrix).toEqual(emptyBoard);
+  });
 
-  // Hit case
-  game.receiveAttack(0, 9);
-  expect(game.display()).toEqual([ 
-    [ 'M', '-', '-', '-', '-', '-', 'X', 'X', 'X', 'H' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', 'X', 'X', 'X', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ 'X', 'X', 'X', 'X', 'X', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', 'X', 'X', 'X' ],
-    [ '-', 'X', 'X', '-', '-', '-', '-', '-', '-', '-' ]
-  ]);
-  expect(game.isAllShipsSunk()).toBe(false);
+  test("should place a ship successfully when coordinates are valid", () => {
+    const placed = game.placeShip(0, 0);
+    expect(placed).toBe(true);
+    for (let i = 0; i < 5; i++) {
+      expect(game.gameBoardMatrix[0][i]).toBeInstanceOf(Ship);
+    }
+  });
 
-  // Attack all ships
-  game.receiveAttack(0, 6);
-  game.receiveAttack(0, 7);
-  game.receiveAttack(0, 8);
+  test("should not place ship if collision or invalid position", () => {
+    game.placeShip(0, 0);
+    const failed = game.placeShip(0, 0);
+    expect(failed).toBe(false);
+  });
 
-  game.receiveAttack(3, 2);
-  game.receiveAttack(3, 3);
-  game.receiveAttack(3, 4);
-  
-  game.receiveAttack(5, 0);
-  game.receiveAttack(5, 1);
-  game.receiveAttack(5, 2);
-  game.receiveAttack(5, 3);
-  game.receiveAttack(5, 4);
+  test("should register hit correctly", () => {
+    game.placeShip(0, 0);
+    const hitResult = game.receiveAttack(0, 0);
+    expect(hitResult).toBe(true);
+    expect(game.gameBoardMatrix[0][0]).toBe(true);
+  });
 
-  game.receiveAttack(8, 7);
-  game.receiveAttack(8, 8);
-  game.receiveAttack(8, 9);
-  expect(game.isAllShipsSunk()).toBe(false);
+  test("should register miss correctly", () => {
+    game.placeShip(0, 0);
+    const missResult = game.receiveAttack(5, 5);
+    expect(missResult).toBe(false);
+    expect(game.gameBoardMatrix[5][5]).toBe(false);
+  });
 
-  game.receiveAttack(9, 1);
-  game.receiveAttack(9, 2);
-  expect(game.display()).toEqual([ 
-    [ 'M', '-', '-', '-', '-', '-', 'H', 'H', 'H', 'H' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', 'H', 'H', 'H', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ 'H', 'H', 'H', 'H', 'H', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', '-', '-', '-' ],
-    [ '-', '-', '-', '-', '-', '-', '-', 'H', 'H', 'H' ],
-    [ '-', 'H', 'H', '-', '-', '-', '-', '-', '-', '-' ]
-  ]);
-  expect(game.isAllShipsSunk()).toBe(true);
+  test("should detect when all ships are sunk", () => {
+    game.placeShip(0, 0);
+    const ship = game.shipsArr[0];
+    for (let i = 0; i < ship.length; i++) {
+      game.receiveAttack(0, i);
+    }
+    expect(ship.isSunk()).toBe(true);
+    expect(game.isAllShipsSunk()).toBe(true);
+  });
+
+  test("should display correct board symbols", () => {
+    game.placeShip(0, 0);
+    game.receiveAttack(0, 0);
+    game.receiveAttack(1, 1);
+
+    const displayMatrix = game.display();
+
+    expect(displayMatrix[0][0]).toBe("H");
+    expect(displayMatrix[1][1]).toBe("M");
+    expect(displayMatrix[0][1]).toBe("X");
+  });
+
+  // 🔹 NEW TESTS FOR changeAxis()
+  test("should toggle all ships’ orientation", () => {
+    // Initially all true (horizontal)
+    expect(game.shipsHorizontal.every(val => val === true)).toBe(true);
+
+    // First toggle → all become false
+    game.changeAxis();
+    expect(game.shipsHorizontal.every(val => val === false)).toBe(true);
+
+    // Second toggle → all become true again
+    game.changeAxis();
+    expect(game.shipsHorizontal.every(val => val === true)).toBe(true);
+  });
+
+  test("should allow placing ships vertically after changeAxis()", () => {
+    game.changeAxis(); // make all ships vertical
+    const placed = game.placeShip(0, 0);
+    expect(placed).toBe(true);
+
+    const ship = game.shipsArr[0];
+    for (let i = 0; i < ship.length; i++) {
+      expect(game.gameBoardMatrix[i][0]).toBeInstanceOf(Ship); // vertical placement
+    }
+  });
 });

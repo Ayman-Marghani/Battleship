@@ -1,57 +1,110 @@
 import Ship from "./ship";
 
-/**
- * @class Gameboard
- * @constructor Gameboard()
- * @property {Array<Array<Cell>>} gameBoardMatrix - The 2D array representing the game board.
- * @property {Array<Ship>} shipsArr - The array of ships placed on the game board.
- * @method placeShips()
- * Places ships on the game board based on the provided ship sizes.
- * @returns {void}
- * @method receiveAttack(x, y)
- * Makes an attack on the game board at the specified coordinates.
- * @param {number} x - The x-coordinate of the attack.
- * @param {number} y - The y-coordinate of the attack.
- * @returns {void}
- * @method isAllShipsSunk()
- * Checks if all ships have been sunk.
- * @returns {boolean} True if all ships are sunk, false otherwise.
- * @method display()
- * Returns the current state of the game board as a 2D array of strings.
- * @returns {Array<Array<String>>} 
- */
+
 
 class Gameboard {
   
   constructor() {
     const GAME_BOARD_SIZE = 10;
-    // Init 2D array and initialize it with null
     // empty cell -> null, ship cell -> ship object, hit -> true, miss -> false
     this.gameBoardMatrix = Array.from({length: GAME_BOARD_SIZE}, () => Array(GAME_BOARD_SIZE).fill(null)); 
-    this.shipsArr = [];
-    this.placeShips();
+    // X -> temporary ship position being verified, ship -> verified ship position
+    this.testMatrix = Array.from({length: GAME_BOARD_SIZE}, () => Array(GAME_BOARD_SIZE).fill('-')); 
+    this.shipsArr = []; // Array of ships object
+    this.shipsCords = []; // Array of ships' start position (x, y)
+    this.shipsSizes = [5, 4, 3, 3, 2]; // Array of ship sizes
+    this.shipsHorizontal = Array(5).fill(true); // Array of wether a ship is horizontal or vertical (Default is horizontal)
   }
 
-  placeShips() {
-    const shipsSizes = [5, 4, 3, 3, 2];
-    // TODO: Randomize and user input wil be used later
-    const shipsCords = [[5, 0], [0, 6], [3, 2], [8, 7], [9, 1]];
+  // Helper functions
+  isCoordValid(x, y) {
+    // Invalid coordinates (out of board)
+    if (x < 0 || x >= 10 || y < 0 || y >= 10) {
+      return false;
+    }
+    return true;
+  }
 
-    for (let i = 0; i < shipsSizes.length; i++) {
-      // Get current ship size
-      const curSize = shipsSizes[i];
-      // Create a new ship and push it to shipsArr
-      this.shipsArr.push(new Ship(curSize));
-      const curShip = this.shipsArr[i];
-      // Get current ship coordinates
-      let [firstCord, secondCord] = shipsCords[i];
-      // Place curShip on gameboard
-      for (let count = 0; count < curSize; count++) {
-        this.gameBoardMatrix[firstCord][secondCord] = curShip;
-        secondCord++;
+  collision(x, y) { // Check for Collision with other ships
+    // 8 neighbor cells indices
+    const neighborXArr = [-1, -1, -1, 1, 1, 1, 0, 0]; 
+    const neighborYArr = [-1, 0, 1, -1, 0, 1, -1, 1]; 
+    for (let i = 0; i < neighborXArr.length; i++) {
+      const neighborX = x + neighborXArr[i];
+      const neighborY = y + neighborYArr[i];
+      if (this.isCoordValid(neighborX, neighborY)) {
+        if (this.testMatrix[neighborX][neighborY] === 'ship') { // If there is a ship on a neighbor cell
+          return true;
+        }
       }
     }
+    return false;
   }
+
+  checkShipCoord(x, y) { // returns true if all ships' cells are valid and there isn't a collision with other ships
+    this.shipsCords.push([x, y]);
+    // Get idx, size, and isHorizontal information of current ship
+    const idx = this.shipsCords.length - 1;
+    const size = this.shipsSizes[idx];
+    const isHorizontal = this.shipsHorizontal[idx];
+    for (let i = 0; i < size; i++) {
+      // Check if coordinates are valid and if there is a collision with other ships
+      if (!this.isCoordValid(x, y) || this.collision(x, y)) {
+        this.shipsCords.pop();
+        return false;
+      }
+      // Put X mark on testMatrix
+      this.testMatrix[x][y] = 'X';
+      if (isHorizontal) { // if ship direction is horizontal
+        y++;
+      }
+      else { // if ship direction is vertical
+        x++;
+      }
+    }
+    // After making sure the positions of the ships' cell are valid, mark the cells with 'ship'
+    let [tempX, tempY] = this.shipsCords[idx];
+    for (let i = 0; i < size; i++) {
+      this.testMatrix[tempX][tempY] = 'ship';
+      if (isHorizontal) { // if ship direction is horizontal
+        tempY++;
+      }
+      else { // if ship direction is vertical
+        tempX++;
+      }
+    }
+    return true;
+  } 
+
+  // Main functions
+  placeShip(x, y) {
+    if (this.checkShipCoord(x, y)) {
+      // Get idx, size, and isHorizontal information of current ship
+      const idx = this.shipsCords.length - 1;
+      const size = this.shipsSizes[idx];
+      const isHorizontal = this.shipsHorizontal[idx];
+      // Create a new ship and push it to shipsArr
+      this.shipsArr.push(new Ship(size));
+      const curShip = this.shipsArr[idx];
+      // Put the ship object in the gameBoardMatrix
+      for (let i = 0; i < size; i++) {
+        this.gameBoardMatrix[x][y] = curShip;
+        if (isHorizontal) { // if ship direction is horizontal
+          y++;
+        }
+        else { // if ship direction is vertical
+          x++;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  changeAxis() {
+    this.shipsHorizontal = this.shipsHorizontal.map(axis => !axis);
+  }
+
   receiveAttack(x, y) {
     if (x < 0 || x >= this.gameBoardMatrix.length || y < 0 || y >= this.gameBoardMatrix.length) {
       return null;
@@ -69,6 +122,11 @@ class Gameboard {
       return false;
     }
   }
+
+  isAllShipsPlaced() {
+    return this.shipsArr.length === this.shipsSizes.length;
+  }
+
   isAllShipsSunk() {
     // Call isSunk() for all ships
     for (const ship of this.shipsArr) {
@@ -78,6 +136,7 @@ class Gameboard {
     }
     return true;
   }
+  
   display() {
     return this.gameBoardMatrix.map((row) => {
       return row.map((item) => {

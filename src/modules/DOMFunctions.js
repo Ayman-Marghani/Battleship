@@ -10,18 +10,21 @@ function removeChildren(elem) {
   }
 }
 
-function createCell(type, parentElem) {
-  // Get the last cell before the new one
-  const lastCell = parentElem.lastElementChild;
-  let newIndex = 0; // In case the new cell is the first cell
-  if (lastCell) {
-    // Calculate the new cell index
-    newIndex = Number(lastCell.getAttribute('index')) + 1;
+function editCellType(boardElem, cellIndex, type) {
+  // Get the current cell by index
+  const curCell = boardElem.children[cellIndex];
+  // Add the type to the class list
+  curCell.classList.add(type);
+}
+
+function renderEmptyBoard(boardElem) {
+  const cellsCount = 100;
+  for (let i = 0; i < cellsCount; i++) {
+    const newCellElement = document.createElement('div');
+    newCellElement.setAttribute('index', i);
+    newCellElement.classList.add('cell');
+    boardElem.appendChild(newCellElement);
   }
-  const newCellElement = document.createElement('div');
-  newCellElement.setAttribute('index', newIndex);
-  newCellElement.classList.add(...['cell', type]);
-  parentElem.appendChild(newCellElement);
 }
 
 // Main functions
@@ -35,26 +38,33 @@ function removeBoardsCells() {
   removeChildren(secondBoardElem);
 }
 
+function initialRender() {
+  renderEmptyBoard(firstBoardElem);
+  renderEmptyBoard(secondBoardElem);
+}
+
 function renderBoard(boardElem) {
   return (playerObj) => {
     const gamebaord = playerObj.getBoard();
 
-    gamebaord.forEach(row => {
-      row.forEach(item => {
-        if (item === 'X') { // Ship cell
-          createCell('ship', boardElem);
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 10; j++) {
+        // Calculate cell index
+        const cellIndex = i * 10 + j;
+        if (gamebaord[i][j] === 'X') { // Ship cell
+          editCellType(boardElem, cellIndex, 'ship');
         }
-        else if (item === 'H') { // Hit cell
-          createCell('hit', boardElem);
+        else if (gamebaord[i][j] === 'H') { // Hit cell
+          editCellType(boardElem, cellIndex, 'hit');
         }
-        else if (item === 'M') { // Miss cell
-          createCell('miss', boardElem);
+        else if (gamebaord[i][j] === 'M') { // Miss cell
+          editCellType(boardElem, cellIndex, 'miss');
         }
         else { // Empty cell
-          createCell('empty', boardElem);
+          editCellType(boardElem, cellIndex, 'empty');
         }
-      });
-    });
+      }
+    }
   };
 }
 
@@ -110,6 +120,7 @@ function replaceCellClass(cell, currentClass, newClass) {
 }
 
 export {
+  initialRender,
   renderPlayerBanner,
   removeBoardsCells,
   renderFirstBoard,
