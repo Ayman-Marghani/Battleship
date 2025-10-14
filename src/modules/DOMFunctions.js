@@ -1,7 +1,13 @@
 // DOM elements 
-const firstBoardElem = document.querySelector(".first-board");
-const secondBoardElem = document.querySelector(".second-board");
 const currentPlayerBanner = document.querySelector(".current-player");
+// First board elements
+const firstBoardElem = document.querySelector(".first-board");
+const changeAxisButtonFirst = document.querySelector(".change-axis-first-button");
+const randomizeButtonFirst = document.querySelector(".randomize-first-button");
+// Second board elements
+const secondBoardElem = document.querySelector(".second-board");
+const changeAxisButtonSecond = document.querySelector(".change-axis-second-button");
+const randomizeButtonSecond = document.querySelector(".randomize-second-button");
 
 // Helper functions
 function removeChildren(elem) {
@@ -68,6 +74,8 @@ function renderBoard(boardElem) {
     }
   };
 }
+const renderFirstBoard = renderBoard(firstBoardElem);
+const renderSecondBoard = renderBoard(secondBoardElem);
 
 function hideBoard(boardElem) {
   return () => {
@@ -76,6 +84,8 @@ function hideBoard(boardElem) {
     }
   };
 }
+const hideFirstBoard = hideBoard(firstBoardElem);
+const hideSecondBoard = hideBoard(secondBoardElem);
 
 function showBoard(boardElem) {
   return () => {
@@ -84,13 +94,6 @@ function showBoard(boardElem) {
     }
   };
 }
-
-const renderFirstBoard = renderBoard(firstBoardElem);
-const renderSecondBoard = renderBoard(secondBoardElem);
-
-const hideFirstBoard = hideBoard(firstBoardElem);
-const hideSecondBoard = hideBoard(secondBoardElem);
-
 const showFirstBoard = showBoard(firstBoardElem);
 const showSecondBoard = showBoard(secondBoardElem);
 
@@ -109,6 +112,23 @@ function removeEventListenerFirstBoard(handleClickFunc) {
 
 function removeEventListenerSecondBoard(handleClickFunc) {
   secondBoardElem.removeEventListener('click', handleClickFunc);
+}
+
+// Buttons
+function addEventListenerChangeAxisFirstBoard(handleClickFunc) {
+  changeAxisButtonFirst.addEventListener('click', handleClickFunc);
+}
+
+function addEventListenerChangeAxisSecondBoard(handleClickFunc) {
+  changeAxisButtonSecond.addEventListener('click', handleClickFunc);
+}
+
+function removeEventListenerChangeAxisFirstBoard(handleClickFunc) {
+  changeAxisButtonFirst.removeEventListener('click', handleClickFunc);
+}
+
+function removeEventListenerChangeAxisSecondBoard(handleClickFunc) {
+  changeAxisButtonSecond.removeEventListener('click', handleClickFunc);
 }
 
 // Board cell functions
@@ -134,6 +154,10 @@ export {
   addEventListenerSecondBoard,
   removeEventListenerFirstBoard,
   removeEventListenerSecondBoard,
+  addEventListenerChangeAxisFirstBoard,
+  addEventListenerChangeAxisSecondBoard,
+  removeEventListenerChangeAxisFirstBoard,
+  removeEventListenerChangeAxisSecondBoard,
   isCellEmptyOrShip,
   replaceCellClass,
 };
