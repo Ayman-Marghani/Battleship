@@ -28,6 +28,16 @@ class Player {
     const isHit = this.gameboard.receiveAttack(x, y);
     return isHit;
   }
+  placeShip(x, y) {
+    const isPlaced = this.gameboard.placeShip(x, y);
+    return isPlaced;
+  }
+  changeShipAxis() {
+    this.gameboard.changeAxis();
+  }
+  isAllShipsPlaced() {
+    return this.gameboard.isAllShipsPlaced();
+  }
   isLoser() {
     return this.gameboard.isAllShipsSunk();
   }

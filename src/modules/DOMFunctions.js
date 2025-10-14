@@ -13,6 +13,8 @@ function removeChildren(elem) {
 function editCellType(boardElem, cellIndex, type) {
   // Get the current cell by index
   const curCell = boardElem.children[cellIndex];
+  // Remove 'empty' type from class list
+  curCell.classList.remove('empty');
   // Add the type to the class list
   curCell.classList.add(type);
 }
@@ -46,7 +48,6 @@ function initialRender() {
 function renderBoard(boardElem) {
   return (playerObj) => {
     const gamebaord = playerObj.getBoard();
-
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
         // Calculate cell index
@@ -94,20 +95,20 @@ const showFirstBoard = showBoard(firstBoardElem);
 const showSecondBoard = showBoard(secondBoardElem);
 
 // Event listeners functions
-function addEventListenerFirstBoard(handleAttackFunc) {
-  firstBoardElem.addEventListener('click', handleAttackFunc);
+function addEventListenerFirstBoard(handleClickFunc) {
+  firstBoardElem.addEventListener('click', handleClickFunc);
 }
 
-function addEventListenerSecondBoard(handleAttackFunc) {
-  secondBoardElem.addEventListener('click', handleAttackFunc);
+function addEventListenerSecondBoard(handleClickFunc) {
+  secondBoardElem.addEventListener('click', handleClickFunc);
 }
 
-function removeEventListenerFirstBoard(handleAttackFunc) {
-  firstBoardElem.removeEventListener('click', handleAttackFunc);
+function removeEventListenerFirstBoard(handleClickFunc) {
+  firstBoardElem.removeEventListener('click', handleClickFunc);
 }
 
-function removeEventListenerSecondBoard(handleAttackFunc) {
-  secondBoardElem.removeEventListener('click', handleAttackFunc);
+function removeEventListenerSecondBoard(handleClickFunc) {
+  secondBoardElem.removeEventListener('click', handleClickFunc);
 }
 
 // Board cell functions

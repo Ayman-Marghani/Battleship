@@ -1,6 +1,7 @@
 // JS modules
 import Player from './modules/player';
 import {
+  initialRender,
   renderPlayerBanner,
   removeBoardsCells,
   renderFirstBoard,
@@ -19,22 +20,51 @@ import {
 // CSS styles file
 import './styles.css';
 
-// global variables
+// Global variables
 const p1 = new Player(false, "P1");
 const p2 = new Player(false, "P2");
 let currentPlayer = p1.name;
 
-//  functions
-function endGame(winningPlayerName) {
-  renderPlayerBanner(`${winningPlayerName} Won!`);
-  removeEventListenerSecondBoard(handleFirstPlayerAttack);
-  removeEventListenerFirstBoard(handleSecondPlayerAttack);
+// Helper functions
+// Returns the x and y coordinates of a cell based on its index.
+function getCellCoordinates(cell) {
+  // Get index of cell
+  const index = Number(cell.getAttribute('index'));
+  // Calc x and y coordinates
+  const x = Math.floor(index / 10);
+  const y = index % 10;
+  return [x, y];
 }
 
-function changeTurn(nextPlayerName) {
+// # Main functions
+// ## Game flow functions
+function initGame() {
+  // Remove all cells in the game boards
+  removeBoardsCells();
+  // Render empty boards
+  initialRender();
+  // First player place ships
+  placeFirstPlayerShips();
+}
+
+function continueGame() {
+  removeEventListenerSecondBoard(handleSecondPlayerPlaceShip);
+  // Add Attack event listeners for each board
+  addEventListenerSecondBoard(handleFirstPlayerAttack);
+  addEventListenerFirstBoard(handleSecondPlayerAttack);
+
+  // Hide second board and show first board
+  hideSecondBoard();
+  showFirstBoard();
+
+  // Display current player turn
+  renderPlayerBanner(`${currentPlayer}'s turn`);
+}
+
+function switchPlayerTurn(nextPlayerName) {
   // change global variable
   currentPlayer = nextPlayerName;
-  // change banner
+  // change player turn banner
   renderPlayerBanner(`${currentPlayer}'s turn`);
 
   if (currentPlayer === p1.name) {
@@ -51,7 +81,16 @@ function changeTurn(nextPlayerName) {
   }
 }
 
-function handleAttack(attacker, attackedPlayer) {
+function endGame(winningPlayerName) {
+  renderPlayerBanner(`${winningPlayerName} Won!`);
+  // Remove event listener for all boards
+  removeEventListenerSecondBoard(handleFirstPlayerAttack);
+  removeEventListenerFirstBoard(handleSecondPlayerAttack);
+}
+
+// ## Handle user input functions 
+// ### Attack functions
+function handlePlayerAttack(attacker, attackedPlayer) {
   return (event) => {
     // Make sure it's current player turn
     if (currentPlayer !== attacker.name) {
@@ -60,11 +99,8 @@ function handleAttack(attacker, attackedPlayer) {
     const curCell = event.target;
     // make sure it's an empty or ship cell
     if (isCellEmptyOrShip(curCell)) {      
-      // get index of cell
-      const index = Number(curCell.getAttribute('index'));
-      // calc x and y coordinates
-      const x = Math.floor(index / 10);
-      const y = index % 10;
+      // Get x and y coordinates
+      const [x, y] = getCellCoordinates(curCell);
       // Attack second board
       const isHit = attackedPlayer.receiveAttack(x, y);
       if (isHit) { // Hit case
@@ -75,7 +111,7 @@ function handleAttack(attacker, attackedPlayer) {
         // replace empty class with miss class
         replaceCellClass(curCell, 'empty', 'miss');
         // change turn
-        changeTurn(attackedPlayer.name);
+        switchPlayerTurn(attackedPlayer.name);
       }
       // check if game ended
       if (attackedPlayer.isLoser()) {
@@ -86,28 +122,68 @@ function handleAttack(attacker, attackedPlayer) {
   };
 }
 
-const handleFirstPlayerAttack = handleAttack(p1, p2);
-const handleSecondPlayerAttack = handleAttack(p2, p1);
+const handleFirstPlayerAttack = handlePlayerAttack(p1, p2);
+const handleSecondPlayerAttack = handlePlayerAttack(p2, p1);
 
-function startGame() {
-  // Add event listeners 
-  addEventListenerSecondBoard(handleFirstPlayerAttack);
-  addEventListenerFirstBoard(handleSecondPlayerAttack);
-  // Remove all cells in game boards
-  removeBoardsCells();
-  // Render game boards
-  renderFirstBoard(p1);
-  renderSecondBoard(p2);
+// ### Ships placement functions
+function placeFirstPlayerShips() {
+  // TODO: render ships on the side of first board
 
-  // Hide second board and show first board
-  hideSecondBoard();
-  showFirstBoard();
-
-  // Display current player turn
-  renderPlayerBanner(`${currentPlayer}'s turn`);
+  // First player turn to place Ships
+  renderPlayerBanner(`${p1.name}'s turn to place ships`);
+  addEventListenerFirstBoard(handleFirstPlayerPlaceShip);
 }
+
+function placeSecondPlayerShips() {
+  // TODO: render ships on the side of second board
+
+  // Hide first board from the second player
+  hideFirstBoard();
+  removeEventListenerFirstBoard(handleFirstPlayerPlaceShip);
+  // Second player turn to place Ships
+  renderPlayerBanner(`${p2.name}'s Place Ships`);
+  addEventListenerSecondBoard(handleSecondPlayerPlaceShip);
+}
+
+function handlePlaceShip(playerObj) {
+  return (event) => {
+    // Get the clicked cell and get its coordinates
+    const curCell = event.target;
+    const [x, y] = getCellCoordinates(curCell);
+    // Place the ship in the clicked cell
+    const isShipPlaced = playerObj.placeShip(x, y) 
+    if (isShipPlaced) {
+      // Render current player board
+      if (playerObj === p1) {
+        renderFirstBoard(p1);
+      }
+      else {
+        renderSecondBoard(p2);
+      }
+      // TODO: remove placed ship from UI
+    }
+    else {
+      // Display ship placement error
+      // TODO: displayShipPlacementError();
+      console.log("CAN NOT place ship in this position");
+    }
+    // If all ships are placed start the game
+    if (playerObj.isAllShipsPlaced()) {
+      if (playerObj === p1) {
+        placeSecondPlayerShips();
+      }
+      else {
+        continueGame();
+      } 
+    }
+  };
+}
+
+const handleFirstPlayerPlaceShip = handlePlaceShip(p1);
+const handleSecondPlayerPlaceShip = handlePlaceShip(p2);
+
 // Start the game
-startGame();
+initGame();
 
 
 
