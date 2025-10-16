@@ -35,6 +35,9 @@ class Player {
   changeShipAxis() {
     this.gameboard.changeAxis();
   }
+  randomizeShips() {
+    this.gameboard.randomizeShips();
+  }
   isAllShipsPlaced() {
     return this.gameboard.isAllShipsPlaced();
   }

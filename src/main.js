@@ -18,6 +18,10 @@ import {
   addEventListenerChangeAxisSecondBoard,
   removeEventListenerChangeAxisFirstBoard,
   removeEventListenerChangeAxisSecondBoard,
+  addEventListenerRandomizeFirstBoard,
+  addEventListenerRandomizeSecondBoard,
+  removeEventListenerRandomizeFirstBoard,
+  removeEventListenerRandomizeSecondBoard,
   isCellEmptyOrShip,
   replaceCellClass,
 } from './modules/DOMFunctions';
@@ -53,13 +57,14 @@ function initGame() {
 
 function continueGame() {
   removeEventListenerChangeAxisSecondBoard(handleChangeAxis(p2));
+  removeEventListenerRandomizeSecondBoard(handleRandomize(p2));
   removeEventListenerSecondBoard(handleSecondPlayerPlaceShip);
   // Add Attack event listeners for each board
   addEventListenerSecondBoard(handleFirstPlayerAttack);
   addEventListenerFirstBoard(handleSecondPlayerAttack);
 
   // Hide second board and show first board
-  hideSecondBoard();
+  setTimeout(hideSecondBoard, 1000);
   showFirstBoard();
 
   // Display current player turn
@@ -110,6 +115,12 @@ function handlePlayerAttack(attacker, attackedPlayer) {
       if (isHit) { // Hit case
         // replace ship class with hit class
         replaceCellClass(curCell, 'ship', 'hit');
+        if (attackedPlayer === p1) {
+          renderFirstBoard(p1);
+        }
+        else {
+          renderSecondBoard(p2);
+        }
       }
       else { // Miss case
         // replace empty class with miss class
@@ -137,20 +148,23 @@ function placeFirstPlayerShips() {
   addEventListenerFirstBoard(handleFirstPlayerPlaceShip);
   // Event listener for change axis and randomize buttons
   addEventListenerChangeAxisFirstBoard(handleChangeAxis(p1));
+  addEventListenerRandomizeFirstBoard(handleRandomize(p1));
 }
 
 function placeSecondPlayerShips() {
   // TODO: render ships on the side of second board
 
   // Hide first board from the second player
-  hideFirstBoard();
+  setTimeout(hideFirstBoard, 1000);
   removeEventListenerFirstBoard(handleFirstPlayerPlaceShip);
-  removeEventListenerChangeAxisFirstBoard(handleChangeAxis(p1))
+  removeEventListenerChangeAxisFirstBoard(handleChangeAxis(p1));
+  removeEventListenerRandomizeFirstBoard(handleRandomize(p1));
   // Second player turn to place Ships
   renderPlayerBanner(`${p2.name}'s Place Ships`);
   addEventListenerSecondBoard(handleSecondPlayerPlaceShip);
-  // TODO: Event listener for change axis and randomize buttons
+  // Event listener for change axis and randomize buttons
   addEventListenerChangeAxisSecondBoard(handleChangeAxis(p2));
+  addEventListenerRandomizeSecondBoard(handleRandomize(p2));
 }
 
 function handlePlaceShip(playerObj) {
@@ -193,6 +207,12 @@ const handleSecondPlayerPlaceShip = handlePlaceShip(p2);
 function handleChangeAxis(playerObj) {
   return () => {
     playerObj.changeShipAxis();
+  }
+}
+
+function handleRandomize(playerObj) {
+  return () => {
+    playerObj.randomizeShips();
   }
 }
 

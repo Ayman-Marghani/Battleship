@@ -1,15 +1,13 @@
 import Ship from "./ship";
 
-
-
 class Gameboard {
   
   constructor() {
-    const GAME_BOARD_SIZE = 10;
+    this.GAME_BOARD_SIZE = 10;
     // empty cell -> null, ship cell -> ship object, hit -> true, miss -> false
-    this.gameBoardMatrix = Array.from({length: GAME_BOARD_SIZE}, () => Array(GAME_BOARD_SIZE).fill(null)); 
+    this.gameBoardMatrix = Array.from({length: this.GAME_BOARD_SIZE}, () => Array(this.GAME_BOARD_SIZE).fill(null)); 
     // X -> temporary ship position being verified, ship -> verified ship position
-    this.testMatrix = Array.from({length: GAME_BOARD_SIZE}, () => Array(GAME_BOARD_SIZE).fill('-')); 
+    this.testMatrix = Array.from({length: this.GAME_BOARD_SIZE}, () => Array(this.GAME_BOARD_SIZE).fill('-')); 
     this.shipsArr = []; // Array of ships object
     this.shipsCords = []; // Array of ships' start position (x, y)
     this.shipsSizes = [5, 4, 3, 3, 2]; // Array of ship sizes
@@ -17,9 +15,12 @@ class Gameboard {
   }
 
   // Helper functions
+  getRandomBool() {
+    return Math.random() < 0.5;
+  }
   isCoordValid(x, y) {
     // Invalid coordinates (out of board)
-    if (x < 0 || x >= 10 || y < 0 || y >= 10) {
+    if (x < 0 || x >= this.GAME_BOARD_SIZE || y < 0 || y >= this.GAME_BOARD_SIZE) {
       return false;
     }
     return true;
@@ -76,6 +77,42 @@ class Gameboard {
     return true;
   } 
 
+  markSunkShipNeighbors(x, y) {
+    // Visited matrix
+    let visited = Array.from({length: this.GAME_BOARD_SIZE}, () => Array(this.GAME_BOARD_SIZE).fill(false)); 
+    // Neighbor indices array
+    const neighborXArr = [-1, -1, -1, 1, 1, 1, 0, 0]; 
+    const neighborYArr = [-1, 0, 1, -1, 0, 1, -1, 1]; 
+    // Make a coordinates queue and push x, y to it
+    let coordQueue = [];
+    coordQueue.push([x, y]);
+
+    while (coordQueue.length !== 0) {
+      // Get the first coordinates in the queue
+      const [curX, curY] = coordQueue.shift();
+      if (!visited[curX][curY]) {
+        visited[curX][curY] = true;
+        console.log("Currently checking neighbors of: ", curX, curY);
+        for (let i = 0; i < neighborXArr.length; i++) {
+          const neighborX = curX + neighborXArr[i];
+          const neighborY = curY + neighborYArr[i];
+          if (this.isCoordValid(neighborX, neighborY)) {
+            // empty cell case
+            if (this.gameBoardMatrix[neighborX][neighborY] === null) {
+              // mark it with miss
+              this.gameBoardMatrix[neighborX][neighborY] = false;
+            }
+            // sunk ship cell case
+            else if (this.gameBoardMatrix[neighborX][neighborY] === true) {
+              // push these coordinates to queue
+              coordQueue.push([neighborX, neighborY]);
+            }
+          }
+        }
+      }
+    }
+  }
+
   // Main functions
   placeShip(x, y) {
     if (this.checkShipCoord(x, y)) {
@@ -105,19 +142,39 @@ class Gameboard {
     this.shipsHorizontal = this.shipsHorizontal.map(axis => !axis);
   }
 
+  randomizeShips() {
+    for (let i = 0; i < this.shipsSizes.length; i++) {
+      // Random direction
+      this.shipsHorizontal[i] = this.getRandomBool();
+      // Generate random coordinates
+      let isPlaced = false;
+      while (!isPlaced) {
+        const x = Math.floor(Math.random() * this.GAME_BOARD_SIZE);
+        const y = Math.floor(Math.random() * this.GAME_BOARD_SIZE);
+        isPlaced = this.placeShip(x, y);
+      }
+    }
+  }
+
   receiveAttack(x, y) {
-    if (x < 0 || x >= this.gameBoardMatrix.length || y < 0 || y >= this.gameBoardMatrix.length) {
+    if (!this.isCoordValid(x, y)) {
       return null;
     }
     // Case 1: hit
-    if (this.gameBoardMatrix[x][y] !== null) {
+    if (this.gameBoardMatrix[x][y] instanceof Ship) {
       // Call hit() on ship object
       this.gameBoardMatrix[x][y].hit();
+      // If ship is sunk, mark its neighbor cells with miss
+      if (this.gameBoardMatrix[x][y].isSunk()) {
+        this.markSunkShipNeighbors(x, y);
+        console.log("Finished marking neighboring cells with gray");
+      }
       this.gameBoardMatrix[x][y] = true; // true represents a hit cell
+      //
       return true;
     }
     // Case 2: miss
-    else {
+    else if (this.gameBoardMatrix[x][y] === null) {
       this.gameBoardMatrix[x][y] = false; // false represents a miss cell
       return false;
     }

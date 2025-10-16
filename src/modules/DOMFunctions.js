@@ -114,7 +114,7 @@ function removeEventListenerSecondBoard(handleClickFunc) {
   secondBoardElem.removeEventListener('click', handleClickFunc);
 }
 
-// Buttons
+// Change axis buttons
 function addEventListenerChangeAxisFirstBoard(handleClickFunc) {
   changeAxisButtonFirst.addEventListener('click', handleClickFunc);
 }
@@ -129,6 +129,23 @@ function removeEventListenerChangeAxisFirstBoard(handleClickFunc) {
 
 function removeEventListenerChangeAxisSecondBoard(handleClickFunc) {
   changeAxisButtonSecond.removeEventListener('click', handleClickFunc);
+}
+
+// Randomize buttons
+function addEventListenerRandomizeFirstBoard(handleClickFunc) {
+  randomizeButtonFirst.addEventListener('click', handleClickFunc);
+}
+
+function addEventListenerRandomizeSecondBoard(handleClickFunc) {
+  randomizeButtonSecond.addEventListener('click', handleClickFunc);
+}
+
+function removeEventListenerRandomizeFirstBoard(handleClickFunc) {
+  randomizeButtonFirst.removeEventListener('click', handleClickFunc);
+}
+
+function removeEventListenerRandomizeSecondBoard(handleClickFunc) {
+  randomizeButtonSecond.removeEventListener('click', handleClickFunc);
 }
 
 // Board cell functions
@@ -158,6 +175,10 @@ export {
   addEventListenerChangeAxisSecondBoard,
   removeEventListenerChangeAxisFirstBoard,
   removeEventListenerChangeAxisSecondBoard,
+  addEventListenerRandomizeFirstBoard,
+  addEventListenerRandomizeSecondBoard,
+  removeEventListenerRandomizeFirstBoard,
+  removeEventListenerRandomizeSecondBoard,
   isCellEmptyOrShip,
   replaceCellClass,
 };
