@@ -10,21 +10,18 @@ import {
   hideSecondBoard,
   showFirstBoard,
   showSecondBoard,
-  addEventListenerFirstBoard,
-  addEventListenerSecondBoard,
-  removeEventListenerFirstBoard,
-  removeEventListenerSecondBoard,
-  addEventListenerChangeAxisFirstBoard,
-  addEventListenerChangeAxisSecondBoard,
-  removeEventListenerChangeAxisFirstBoard,
-  removeEventListenerChangeAxisSecondBoard,
-  addEventListenerRandomizeFirstBoard,
-  addEventListenerRandomizeSecondBoard,
-  removeEventListenerRandomizeFirstBoard,
-  removeEventListenerRandomizeSecondBoard,
+  removeShipPlacementButtons,
   isCellEmptyOrShip,
   replaceCellClass,
 } from './modules/DOMFunctions';
+import {
+  addEventListenersFirstBoard,
+  removeEventListenersFirstBoard,
+  addEventListenersSecondBoard,
+  removeEventListenersSecondBoard,
+  addEventListenersForAttack,
+  removeEventListenersForAttack,
+} from './modules/eventListeners';
 // CSS styles file
 import './styles.css';
 
@@ -56,19 +53,21 @@ function initGame() {
 }
 
 function continueGame() {
-  removeEventListenerChangeAxisSecondBoard(handleChangeAxis(p2));
-  removeEventListenerRandomizeSecondBoard(handleRandomize(p2));
-  removeEventListenerSecondBoard(handleSecondPlayerPlaceShip);
-  // Add Attack event listeners for each board
-  addEventListenerSecondBoard(handleFirstPlayerAttack);
-  addEventListenerFirstBoard(handleSecondPlayerAttack);
-
+  // Remove second board event Listeners
+  removeEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(p2), handleRandomize(p2));
+  // Remove ship placement buttons
+  removeShipPlacementButtons();
+  // Render Second board
+  renderSecondBoard(p2);
   // Hide second board and show first board
-  setTimeout(hideSecondBoard, 1000);
-  showFirstBoard();
-
-  // Display current player turn
-  renderPlayerBanner(`${currentPlayer}'s turn`);
+  setTimeout(() => {
+    hideSecondBoard();
+    showFirstBoard();
+    // Display current player turn
+    renderPlayerBanner(`${currentPlayer}'s turn`);
+    // Add Attack event listeners for each board
+    addEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
+  }, 1000);
 }
 
 function switchPlayerTurn(nextPlayerName) {
@@ -93,14 +92,14 @@ function switchPlayerTurn(nextPlayerName) {
 
 function endGame(winningPlayerName) {
   renderPlayerBanner(`${winningPlayerName} Won!`);
-  // Remove event listener for all boards
-  removeEventListenerSecondBoard(handleFirstPlayerAttack);
-  removeEventListenerFirstBoard(handleSecondPlayerAttack);
+  // Remove attack event listener for all boards
+  removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
 }
 
 // ## Player attack functions
 function handlePlayerAttack(attacker, attackedPlayer) {
   return (event) => {
+    console.log("current player: ", currentPlayer);
     // Make sure it's current player turn
     if (currentPlayer !== attacker.name) {
       return;
@@ -145,26 +144,25 @@ function placeFirstPlayerShips() {
 
   // First player turn to place Ships
   renderPlayerBanner(`${p1.name}'s turn to place ships`);
-  addEventListenerFirstBoard(handleFirstPlayerPlaceShip);
-  // Event listener for change axis and randomize buttons
-  addEventListenerChangeAxisFirstBoard(handleChangeAxis(p1));
-  addEventListenerRandomizeFirstBoard(handleRandomize(p1));
+  // Event listener for first board
+  addEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(p1), handleRandomize(p1));
 }
 
 function placeSecondPlayerShips() {
   // TODO: render ships on the side of second board
 
+  // Remove first board event Listeners
+  removeEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(p1), handleRandomize(p1));
+  // Render First board
+  renderFirstBoard(p1);
   // Hide first board from the second player
-  setTimeout(hideFirstBoard, 1000);
-  removeEventListenerFirstBoard(handleFirstPlayerPlaceShip);
-  removeEventListenerChangeAxisFirstBoard(handleChangeAxis(p1));
-  removeEventListenerRandomizeFirstBoard(handleRandomize(p1));
-  // Second player turn to place Ships
-  renderPlayerBanner(`${p2.name}'s Place Ships`);
-  addEventListenerSecondBoard(handleSecondPlayerPlaceShip);
-  // Event listener for change axis and randomize buttons
-  addEventListenerChangeAxisSecondBoard(handleChangeAxis(p2));
-  addEventListenerRandomizeSecondBoard(handleRandomize(p2));
+  setTimeout( () => {
+    hideFirstBoard();
+    // Second player turn to place Ships
+    renderPlayerBanner(`${p2.name}'s Place Ships`);
+    // Event listener for second board
+    addEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(p2), handleRandomize(p2));
+  }, 1000);
 }
 
 function handlePlaceShip(playerObj) {
@@ -213,6 +211,12 @@ function handleChangeAxis(playerObj) {
 function handleRandomize(playerObj) {
   return () => {
     playerObj.randomizeShips();
+    if (playerObj === p1) {
+      placeSecondPlayerShips();
+    }
+    else {
+      continueGame();
+    } 
   }
 }
 

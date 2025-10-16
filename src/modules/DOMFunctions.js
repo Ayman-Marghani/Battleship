@@ -1,10 +1,10 @@
 // DOM elements 
 const currentPlayerBanner = document.querySelector(".current-player");
-// First board elements
+// First board 
 const firstBoardElem = document.querySelector(".first-board");
 const changeAxisButtonFirst = document.querySelector(".change-axis-first-button");
 const randomizeButtonFirst = document.querySelector(".randomize-first-button");
-// Second board elements
+// Second board 
 const secondBoardElem = document.querySelector(".second-board");
 const changeAxisButtonSecond = document.querySelector(".change-axis-second-button");
 const randomizeButtonSecond = document.querySelector(".randomize-second-button");
@@ -97,57 +97,13 @@ function showBoard(boardElem) {
 const showFirstBoard = showBoard(firstBoardElem);
 const showSecondBoard = showBoard(secondBoardElem);
 
-// Event listeners functions
-function addEventListenerFirstBoard(handleClickFunc) {
-  firstBoardElem.addEventListener('click', handleClickFunc);
+// Ship placement buttons functions
+function removeShipPlacementButtons() {
+  changeAxisButtonFirst.remove();
+  changeAxisButtonSecond.remove();
+  randomizeButtonFirst.remove();
+  randomizeButtonSecond.remove();
 }
-
-function addEventListenerSecondBoard(handleClickFunc) {
-  secondBoardElem.addEventListener('click', handleClickFunc);
-}
-
-function removeEventListenerFirstBoard(handleClickFunc) {
-  firstBoardElem.removeEventListener('click', handleClickFunc);
-}
-
-function removeEventListenerSecondBoard(handleClickFunc) {
-  secondBoardElem.removeEventListener('click', handleClickFunc);
-}
-
-// Change axis buttons
-function addEventListenerChangeAxisFirstBoard(handleClickFunc) {
-  changeAxisButtonFirst.addEventListener('click', handleClickFunc);
-}
-
-function addEventListenerChangeAxisSecondBoard(handleClickFunc) {
-  changeAxisButtonSecond.addEventListener('click', handleClickFunc);
-}
-
-function removeEventListenerChangeAxisFirstBoard(handleClickFunc) {
-  changeAxisButtonFirst.removeEventListener('click', handleClickFunc);
-}
-
-function removeEventListenerChangeAxisSecondBoard(handleClickFunc) {
-  changeAxisButtonSecond.removeEventListener('click', handleClickFunc);
-}
-
-// Randomize buttons
-function addEventListenerRandomizeFirstBoard(handleClickFunc) {
-  randomizeButtonFirst.addEventListener('click', handleClickFunc);
-}
-
-function addEventListenerRandomizeSecondBoard(handleClickFunc) {
-  randomizeButtonSecond.addEventListener('click', handleClickFunc);
-}
-
-function removeEventListenerRandomizeFirstBoard(handleClickFunc) {
-  randomizeButtonFirst.removeEventListener('click', handleClickFunc);
-}
-
-function removeEventListenerRandomizeSecondBoard(handleClickFunc) {
-  randomizeButtonSecond.removeEventListener('click', handleClickFunc);
-}
-
 // Board cell functions
 function isCellEmptyOrShip(cell) {
   return cell.classList.contains('empty') || cell.classList.contains('ship');
@@ -167,18 +123,7 @@ export {
   hideSecondBoard,
   showFirstBoard,
   showSecondBoard,
-  addEventListenerFirstBoard,
-  addEventListenerSecondBoard,
-  removeEventListenerFirstBoard,
-  removeEventListenerSecondBoard,
-  addEventListenerChangeAxisFirstBoard,
-  addEventListenerChangeAxisSecondBoard,
-  removeEventListenerChangeAxisFirstBoard,
-  removeEventListenerChangeAxisSecondBoard,
-  addEventListenerRandomizeFirstBoard,
-  addEventListenerRandomizeSecondBoard,
-  removeEventListenerRandomizeFirstBoard,
-  removeEventListenerRandomizeSecondBoard,
+  removeShipPlacementButtons,
   isCellEmptyOrShip,
   replaceCellClass,
 };
