@@ -3,6 +3,10 @@ import Player from './modules/player';
 import {
   initialRender,
   renderPlayerBanner,
+  renderSideShipsFirst,
+  renderSideShipsSecond,
+  changeSideShipsAxisFirst,
+  changeSideShipsAxisSecond,
   removeBoardsCells,
   renderFirstBoard,
   renderSecondBoard,
@@ -46,7 +50,7 @@ function getCellCoordinates(cell) {
 function initGame() {
   // Remove all cells in the game boards
   removeBoardsCells();
-  // Render empty boards
+  // Render boards and ships on the side
   initialRender();
   // First player place ships
   placeFirstPlayerShips();
@@ -99,7 +103,6 @@ function endGame(winningPlayerName) {
 // ## Player attack functions
 function handlePlayerAttack(attacker, attackedPlayer) {
   return (event) => {
-    console.log("current player: ", currentPlayer);
     // Make sure it's current player turn
     if (currentPlayer !== attacker.name) {
       return;
@@ -173,14 +176,15 @@ function handlePlaceShip(playerObj) {
     // Place the ship in the clicked cell
     const isShipPlaced = playerObj.placeShip(x, y) 
     if (isShipPlaced) {
-      // Render current player board
+      // Render current player board and rerender ships on the side
       if (playerObj === p1) {
         renderFirstBoard(p1);
+        renderSideShipsFirst(p1.getIsShipPlacedArr());
       }
       else {
         renderSecondBoard(p2);
+        renderSideShipsSecond(p2.getIsShipPlacedArr());
       }
-      // TODO: remove placed ship from UI
     }
     else {
       // Display ship placement error
@@ -205,6 +209,12 @@ const handleSecondPlayerPlaceShip = handlePlaceShip(p2);
 function handleChangeAxis(playerObj) {
   return () => {
     playerObj.changeShipAxis();
+    if (playerObj === p1) {
+      changeSideShipsAxisFirst();
+    }
+    else {
+      changeSideShipsAxisSecond();
+    }
   }
 }
 
@@ -212,12 +222,14 @@ function handleRandomize(playerObj) {
   return () => {
     playerObj.randomizeShips();
     if (playerObj === p1) {
+      renderSideShipsFirst(p1.getIsShipPlacedArr());
       placeSecondPlayerShips();
     }
     else {
+      renderSideShipsSecond(p2.getIsShipPlacedArr());
       continueGame();
     } 
-  }
+  };
 }
 
 

@@ -38,6 +38,9 @@ class Player {
   randomizeShips() {
     this.gameboard.randomizeShips();
   }
+  getIsShipPlacedArr() {
+    return this.gameboard.getIsShipPlacedArr();
+  }
   isAllShipsPlaced() {
     return this.gameboard.isAllShipsPlaced();
   }

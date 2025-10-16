@@ -92,7 +92,6 @@ class Gameboard {
       const [curX, curY] = coordQueue.shift();
       if (!visited[curX][curY]) {
         visited[curX][curY] = true;
-        console.log("Currently checking neighbors of: ", curX, curY);
         for (let i = 0; i < neighborXArr.length; i++) {
           const neighborX = curX + neighborXArr[i];
           const neighborY = curY + neighborYArr[i];
@@ -167,7 +166,6 @@ class Gameboard {
       // If ship is sunk, mark its neighbor cells with miss
       if (this.gameBoardMatrix[x][y].isSunk()) {
         this.markSunkShipNeighbors(x, y);
-        console.log("Finished marking neighboring cells with gray");
       }
       this.gameBoardMatrix[x][y] = true; // true represents a hit cell
       //
@@ -178,6 +176,14 @@ class Gameboard {
       this.gameBoardMatrix[x][y] = false; // false represents a miss cell
       return false;
     }
+  }
+
+  getIsShipPlacedArr() {
+    let isPlacedArr = Array(5).fill(false);
+    for (let i = 0; i < this.shipsArr.length; i++) {
+      isPlacedArr[i] = true;
+    }
+    return isPlacedArr;
   }
 
   isAllShipsPlaced() {

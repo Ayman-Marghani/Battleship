@@ -1,10 +1,12 @@
 // DOM elements 
 const currentPlayerBanner = document.querySelector(".current-player");
 // First board 
+const shipsContainerFirst = document.querySelector(".first-ships");
 const firstBoardElem = document.querySelector(".first-board");
 const changeAxisButtonFirst = document.querySelector(".change-axis-first-button");
 const randomizeButtonFirst = document.querySelector(".randomize-first-button");
 // Second board 
+const shipsContainerSecond = document.querySelector(".second-ships");
 const secondBoardElem = document.querySelector(".second-board");
 const changeAxisButtonSecond = document.querySelector(".change-axis-second-button");
 const randomizeButtonSecond = document.querySelector(".randomize-second-button");
@@ -35,10 +37,68 @@ function renderEmptyBoard(boardElem) {
   }
 }
 
+function changeFlexDirection(elem) {
+  console.log(elem.classList)
+  console.log("flex direction: ", elem.style.flexDirection)
+  if (elem.style.flexDirection === 'column') {
+    elem.style.flexDirection = 'row';
+  }
+  else {
+    elem.style.flexDirection = 'column';
+  }
+}
+
 // Main functions
 function renderPlayerBanner(text) {
   currentPlayerBanner.textContent = text;
 }
+
+// Side ships functions
+function addSideShipsToDOM(shipsContainerElem) {
+  shipsContainerElem.style.flexDirection = 'column';
+  const shipsSizes = [5, 4, 3, 3, 2]; // I think I should take it as input
+  for (const size of shipsSizes) {
+    const newShipElem = document.createElement('div');
+    newShipElem.classList.add('ship-elem');
+    newShipElem.style.flexDirection = 'row';
+    // Ship Cells
+    for (let i = 0; i < size; i++) {
+      const newCellElement = document.createElement('div');
+      newCellElement.classList.add(...['cell', 'ship']);
+      newShipElem.appendChild(newCellElement);
+    }
+    shipsContainerElem.appendChild(newShipElem);
+  }
+}
+
+function renderSideShips(shipsContainerElem) {
+  return (shipsPlacedArr) => {
+    for (let i = 0; i < shipsPlacedArr.length; i++) {
+      const shipElem = shipsContainerElem.children[i];
+      // If ship is placed on board hide it from the side
+      if (shipsPlacedArr[i]) {
+        shipElem.classList.add('hidden-ship');
+      }
+      else {
+        shipElem.classList.remove('hidden-ship');
+      }
+    }
+  };
+}
+const renderSideShipsFirst = renderSideShips(shipsContainerFirst);
+const renderSideShipsSecond = renderSideShips(shipsContainerSecond);
+
+function changeSideShipsAxis(shipsContainerElem) {
+  return () => {
+    changeFlexDirection(shipsContainerElem);
+    for (const ship of shipsContainerElem.children) {
+      changeFlexDirection(ship);
+    }
+  };
+}
+const changeSideShipsAxisFirst = changeSideShipsAxis(shipsContainerFirst);
+const changeSideShipsAxisSecond = changeSideShipsAxis(shipsContainerSecond);
+
 
 // Game board functions
 function removeBoardsCells() {
@@ -49,6 +109,9 @@ function removeBoardsCells() {
 function initialRender() {
   renderEmptyBoard(firstBoardElem);
   renderEmptyBoard(secondBoardElem);
+  // Render ships on the side of each board
+  addSideShipsToDOM(shipsContainerFirst);
+  addSideShipsToDOM(shipsContainerSecond);
 }
 
 function renderBoard(boardElem) {
@@ -116,6 +179,10 @@ function replaceCellClass(cell, currentClass, newClass) {
 export {
   initialRender,
   renderPlayerBanner,
+  renderSideShipsFirst,
+  renderSideShipsSecond,
+  changeSideShipsAxisFirst,
+  changeSideShipsAxisSecond,
   removeBoardsCells,
   renderFirstBoard,
   renderSecondBoard,
