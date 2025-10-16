@@ -5,8 +5,11 @@ import {
   initialRender,
   resetDOM,
   renderGameModeScreen,
-  renderPlayerNamesFormScreen,
   renderGameScreen,
+  showPlayAgainBtn,
+  renderPlayerNamesFormScreen,
+  getFirstPlayerName,
+  getSecondPlayerName,
   renderSideShipsFirst,
   renderSideShipsSecond,
   changeSideShipsAxisFirst,
@@ -20,6 +23,10 @@ import {
   hideShipPlacementBtns,
 } from './modules/DOMFunctions';
 import {
+  addEventListenerGameModeBtns,
+  removeEventListenerGameModeBtns,
+  addEventListenerPlayerNamesForm,
+  removeEventListenerPlayerNamesForm,
   addEventListenersFirstBoard,
   removeEventListenersFirstBoard,
   addEventListenersSecondBoard,
@@ -59,13 +66,16 @@ function startNewGame() {
   curPlayer = null;
   firstPlayer = null;
   secondPlayer = null;
-  // TODO: reset DOM
-
+  // Reset screen and render Game Mode screen
+  resetDOM();
   renderGameModeScreen();
+  addEventListenerGameModeBtns(handleGameModeClick);
 }
 
 function initGameScreen() {
-  // TODO: render game Screen
+  // TODO: render board titles 
+  removeEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
+  // Render game Screen
   renderGameScreen();
   // First player place ships
   placeFirstPlayerShips();
@@ -109,39 +119,43 @@ function switchPlayerTurn(nextPlayerName) {
 function endGame(winningPlayerName) {
   renderBanner(`${winningPlayerName} Won!`);
   // TODO: show play again button
+  showPlayAgainBtn();
   // addEventListener for play again button
   // write handlePlayAgainClick
     // remove eventlistener for play again button
     // start the game again
+    ``
   // Remove attack event listener for all boards
   removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
 }
 
-// ## Game mode screen functions
-function handleGameModeClick() {
-  return (event) => {
-    computerMode = event.target.classlist.contains('computer-mode-btn');
-    // TODO: removeEventListenerGameModeBtns();
-    renderPlayerNamesFormScreen(computerMode);
-    // TODO: addEventListnerPlayerNamesForm 
-  };
+function moveToPlayerNamesFormScreen(computerMode) {
+  removeEventListenerGameModeBtns(handleGameModeClick);
+  renderPlayerNamesFormScreen(computerMode);
+  addEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
 }
 
-function handlePlayerNamesFormSubmit() {
-  return (event) => {
-    // TODO: getFirstPlayerName();
-    // init firstPlayer
-    if (computerMode) {
-      // TODO: init second player
-      // Player(true);
-    }
-    else {
-      // TODO: getSecondPlayerName();
-      // init second player
-    }
-    // TODO: removeEventListnerPlayerNamesForm 
-    // initGameScreen
-  };
+
+// ## Game mode screen functions
+function handleGameModeClick(event) {
+  computerMode = event.target.classList.contains('computer-mode-btn');
+  moveToPlayerNamesFormScreen(computerMode);
+}
+
+function handlePlayerNamesFormSubmit(event) { 
+  event.preventDefault();
+  // Init firstPlayer
+  firstPlayer = new Player(false, getFirstPlayerName());
+  if (computerMode) {
+    // Init second player (computer)
+    secondPlayer = new Player(true);
+  }
+  else {
+    // Init second player
+    secondPlayer = new Player(false, getSecondPlayerName());
+  }
+  curPlayer = firstPlayer.name;
+  initGameScreen();
 }
 
 // ## Player attack functions

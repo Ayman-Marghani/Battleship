@@ -13,14 +13,20 @@ const bannerElem = document.querySelector(".banner");
 const shipPlacementBtns = document.querySelectorAll(".ship-placement-btns");
 // Screens
 const gameModeScreen = document.querySelector(".game-mode-btns");
-const playerNamesForm = document.querySelector(".player-names-form");
 const gameScreen = document.querySelector(".game-screen");
+// Player Names form
+const playerNamesForm = document.querySelector(".player-names-form");
+const firstNameInput = document.getElementById("fname");
+const secondNameInput = document.getElementById("sname");
+const secondNameContainer = document.querySelector(".second-player-name-input");
 // First board 
 const shipsContainerFirst = document.querySelector(".first-side-ships");
 const firstBoardElem = document.querySelector(".first-board");
 // Second board 
 const shipsContainerSecond = document.querySelector(".second-side-ships");
 const secondBoardElem = document.querySelector(".second-board");
+// Play again button
+const playAgainBtn = document.querySelector(".play-again-btn");
 
 // # Helper functions
 function showShipPlacementBtns() {
@@ -68,16 +74,6 @@ function renderGameModeScreen() {
   renderBanner('Choose Game Mode');
   showElem(gameModeScreen);
 }
-function renderPlayerNamesFormScreen(isComputerMode) {
-  // TODO: if computer mode hide second input div and make it not required
-  // else show it and make it required
-  // Hide other screens
-  hideElem(gameModeScreen);
-  hideElem(gameScreen);
-  // Show player names form screen
-  renderBanner('Enter Player(s) Name');
-  showElem(playerNamesForm);
-}
 function renderGameScreen() {
   // Hide other screens
   hideElem(gameModeScreen);
@@ -85,6 +81,35 @@ function renderGameScreen() {
   // Show game screen and ship placement buttons
   showElem(gameScreen);
   showShipPlacementBtns();
+}
+function showPlayAgainBtn() {
+  showElem(playAgainBtn);
+}
+
+// ## Player names form functions
+function renderPlayerNamesFormScreen(isComputerMode) {
+  // If computer mode hide second input div and make it not 
+  if (isComputerMode) {
+    secondNameInput.required = false;
+    hideElem(secondNameContainer);
+  }
+  // else show it and make it required
+  else {
+    secondNameInput.required = true;
+    showElem(secondNameContainer);
+  }
+  // Hide other screens
+  hideElem(gameModeScreen);
+  hideElem(gameScreen);
+  // Show player names form screen
+  renderBanner('Enter Player(s) Name');
+  showElem(playerNamesForm);
+}
+function getFirstPlayerName() {
+  return firstNameInput.value.trim();
+}
+function getSecondPlayerName() {
+  return secondNameInput.value.trim();
 }
 
 // ## Side ships functions
@@ -175,8 +200,11 @@ export {
   initialRender,
   resetDOM,
   renderGameModeScreen,
-  renderPlayerNamesFormScreen,
   renderGameScreen,
+  showPlayAgainBtn,
+  renderPlayerNamesFormScreen,
+  getFirstPlayerName,
+  getSecondPlayerName,
   renderSideShipsFirst,
   renderSideShipsSecond,
   changeSideShipsAxisFirst,

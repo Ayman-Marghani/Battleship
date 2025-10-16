@@ -63,7 +63,7 @@ body {
 }
 
 .hidden-elem {
-  display: none;
+  display: none !important;
 }
 /************************************************************/
 /* Boards styles */

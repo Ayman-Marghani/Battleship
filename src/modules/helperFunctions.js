@@ -9,7 +9,7 @@ function hideElem(elem) {
   elem.classList.add('hidden-elem');
 }
 function showElem(elem) {
-  elem.classList.remove('hidden-ship');
+  elem.classList.remove('hidden-elem');
 }
 function changeFlexDirection(elem) {
   console.log(elem.classList)
@@ -50,9 +50,9 @@ function addSideShipsToDOM(shipsContainerElem) {
   }
 }
 function showSideShips(shipsContainerElem) {
-  shipsContainerElem.forEach((shipElem) => {
-    showElem(shipElem)
-  });
+  for (const shipElem of shipsContainerElem.children) {
+    showElem(shipElem);
+  }
 }
 
 export {
