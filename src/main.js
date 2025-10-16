@@ -1,22 +1,23 @@
 // JS modules
 import Player from './modules/player';
 import {
+  renderBanner,
   initialRender,
-  renderPlayerBanner,
+  resetDOM,
+  renderGameModeScreen,
+  renderPlayerNamesFormScreen,
+  renderGameScreen,
   renderSideShipsFirst,
   renderSideShipsSecond,
   changeSideShipsAxisFirst,
   changeSideShipsAxisSecond,
-  removeBoardsCells,
   renderFirstBoard,
   renderSecondBoard,
   hideFirstBoard,
   hideSecondBoard,
   showFirstBoard,
   showSecondBoard,
-  removeShipPlacementButtons,
-  isCellEmptyOrShip,
-  replaceCellClass,
+  hideShipPlacementBtns,
 } from './modules/DOMFunctions';
 import {
   addEventListenersFirstBoard,
@@ -26,13 +27,18 @@ import {
   addEventListenersForAttack,
   removeEventListenersForAttack,
 } from './modules/eventListeners';
+import {
+  isCellEmptyOrShip,
+  replaceCellClass,
+} from './modules/boardCellFunctions';
 // CSS styles file
 import './styles.css';
 
 // Global variables
-const p1 = new Player(false, "P1");
-const p2 = new Player(false, "P2");
-let currentPlayer = p1.name;
+let computerMode = null;
+let curPlayer = null;
+let firstPlayer = null;
+let secondPlayer = null;
 
 // Helper functions
 // Returns the x and y coordinates of a cell based on its index.
@@ -47,40 +53,47 @@ function getCellCoordinates(cell) {
 
 // # Main functions
 // ## Game flow functions
-function initGame() {
-  // Remove all cells in the game boards
-  removeBoardsCells();
-  // Render boards and ships on the side
-  initialRender();
+function startNewGame() {
+  // Reset global variables
+  computerMode = null;
+  curPlayer = null;
+  firstPlayer = null;
+  secondPlayer = null;
+  // TODO: reset DOM
+
+  renderGameModeScreen();
+}
+
+function initGameScreen() {
+  // TODO: render game Screen
+  renderGameScreen();
   // First player place ships
   placeFirstPlayerShips();
 }
-
-function continueGame() {
+function continueGameAfterShipsPlacement() {
   // Remove second board event Listeners
-  removeEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(p2), handleRandomize(p2));
+  removeEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(secondPlayer), handleRandomize(secondPlayer));
   // Remove ship placement buttons
-  removeShipPlacementButtons();
+  hideShipPlacementBtns();
   // Render Second board
-  renderSecondBoard(p2);
+  renderSecondBoard(secondPlayer);
   // Hide second board and show first board
   setTimeout(() => {
     hideSecondBoard();
     showFirstBoard();
     // Display current player turn
-    renderPlayerBanner(`${currentPlayer}'s turn`);
+    renderBanner(`${curPlayer}'s turn`);
     // Add Attack event listeners for each board
     addEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
   }, 1000);
 }
-
 function switchPlayerTurn(nextPlayerName) {
   // change global variable
-  currentPlayer = nextPlayerName;
+  curPlayer = nextPlayerName;
   // change player turn banner
-  renderPlayerBanner(`${currentPlayer}'s turn`);
+  renderBanner(`${curPlayer}'s turn`);
 
-  if (currentPlayer === p1.name) {
+  if (curPlayer === firstPlayer.name) {
     // show next player board
     showFirstBoard(); 
     // hide other player board
@@ -93,18 +106,49 @@ function switchPlayerTurn(nextPlayerName) {
     hideFirstBoard();
   }
 }
-
 function endGame(winningPlayerName) {
-  renderPlayerBanner(`${winningPlayerName} Won!`);
+  renderBanner(`${winningPlayerName} Won!`);
+  // TODO: show play again button
+  // addEventListener for play again button
+  // write handlePlayAgainClick
+    // remove eventlistener for play again button
+    // start the game again
   // Remove attack event listener for all boards
   removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
+}
+
+// ## Game mode screen functions
+function handleGameModeClick() {
+  return (event) => {
+    computerMode = event.target.classlist.contains('computer-mode-btn');
+    // TODO: removeEventListenerGameModeBtns();
+    renderPlayerNamesFormScreen(computerMode);
+    // TODO: addEventListnerPlayerNamesForm 
+  };
+}
+
+function handlePlayerNamesFormSubmit() {
+  return (event) => {
+    // TODO: getFirstPlayerName();
+    // init firstPlayer
+    if (computerMode) {
+      // TODO: init second player
+      // Player(true);
+    }
+    else {
+      // TODO: getSecondPlayerName();
+      // init second player
+    }
+    // TODO: removeEventListnerPlayerNamesForm 
+    // initGameScreen
+  };
 }
 
 // ## Player attack functions
 function handlePlayerAttack(attacker, attackedPlayer) {
   return (event) => {
     // Make sure it's current player turn
-    if (currentPlayer !== attacker.name) {
+    if (curPlayer !== attacker.name) {
       return;
     }
     const curCell = event.target;
@@ -117,11 +161,11 @@ function handlePlayerAttack(attacker, attackedPlayer) {
       if (isHit) { // Hit case
         // replace ship class with hit class
         replaceCellClass(curCell, 'ship', 'hit');
-        if (attackedPlayer === p1) {
-          renderFirstBoard(p1);
+        if (attackedPlayer === firstPlayer) {
+          renderFirstBoard(firstPlayer);
         }
         else {
-          renderSecondBoard(p2);
+          renderSecondBoard(secondPlayer);
         }
       }
       else { // Miss case
@@ -138,36 +182,30 @@ function handlePlayerAttack(attacker, attackedPlayer) {
     }
   };
 }
-const handleFirstPlayerAttack = handlePlayerAttack(p1, p2);
-const handleSecondPlayerAttack = handlePlayerAttack(p2, p1);
+const handleFirstPlayerAttack = handlePlayerAttack(firstPlayer, secondPlayer);
+const handleSecondPlayerAttack = handlePlayerAttack(secondPlayer, firstPlayer);
 
 // ## Ships placement functions
 function placeFirstPlayerShips() {
-  // TODO: render ships on the side of first board
-
   // First player turn to place Ships
-  renderPlayerBanner(`${p1.name}'s turn to place ships`);
+  renderBanner(`${firstPlayer.name}'s turn to place ships`);
   // Event listener for first board
-  addEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(p1), handleRandomize(p1));
+  addEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(firstPlayer), handleRandomize(firstPlayer));
 }
-
 function placeSecondPlayerShips() {
-  // TODO: render ships on the side of second board
-
   // Remove first board event Listeners
-  removeEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(p1), handleRandomize(p1));
+  removeEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(firstPlayer), handleRandomize(firstPlayer));
   // Render First board
-  renderFirstBoard(p1);
+  renderFirstBoard(firstPlayer);
   // Hide first board from the second player
   setTimeout( () => {
     hideFirstBoard();
     // Second player turn to place Ships
-    renderPlayerBanner(`${p2.name}'s Place Ships`);
+    renderBanner(`${secondPlayer.name}'s Place Ships`);
     // Event listener for second board
-    addEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(p2), handleRandomize(p2));
+    addEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(secondPlayer), handleRandomize(secondPlayer));
   }, 1000);
 }
-
 function handlePlaceShip(playerObj) {
   return (event) => {
     // Get the clicked cell and get its coordinates
@@ -177,39 +215,38 @@ function handlePlaceShip(playerObj) {
     const isShipPlaced = playerObj.placeShip(x, y) 
     if (isShipPlaced) {
       // Render current player board and rerender ships on the side
-      if (playerObj === p1) {
-        renderFirstBoard(p1);
-        renderSideShipsFirst(p1.getIsShipPlacedArr());
+      if (playerObj === firstPlayer) {
+        renderFirstBoard(firstPlayer);
+        renderSideShipsFirst(firstPlayer.getIsShipPlacedArr());
       }
       else {
-        renderSecondBoard(p2);
-        renderSideShipsSecond(p2.getIsShipPlacedArr());
+        renderSecondBoard(secondPlayer);
+        renderSideShipsSecond(secondPlayer.getIsShipPlacedArr());
       }
     }
     else {
       // Display ship placement error
-      // TODO: displayShipPlacementError();
-      console.log("CAN NOT place ship in this position");
+      renderBanner("Invalid Placement! Try Again");
     }
     // If all ships are placed start the game
     if (playerObj.isAllShipsPlaced()) {
-      if (playerObj === p1) {
+      if (playerObj === firstPlayer) {
         placeSecondPlayerShips();
       }
       else {
-        continueGame();
+        continueGameAfterShipsPlacement();
       } 
     }
   };
 }
-const handleFirstPlayerPlaceShip = handlePlaceShip(p1);
-const handleSecondPlayerPlaceShip = handlePlaceShip(p2);
+const handleFirstPlayerPlaceShip = handlePlaceShip(firstPlayer);
+const handleSecondPlayerPlaceShip = handlePlaceShip(secondPlayer);
 
 // ### Handle change axis and randomize buttons functions
 function handleChangeAxis(playerObj) {
   return () => {
     playerObj.changeShipAxis();
-    if (playerObj === p1) {
+    if (playerObj === firstPlayer) {
       changeSideShipsAxisFirst();
     }
     else {
@@ -217,24 +254,21 @@ function handleChangeAxis(playerObj) {
     }
   }
 }
-
 function handleRandomize(playerObj) {
   return () => {
     playerObj.randomizeShips();
-    if (playerObj === p1) {
-      renderSideShipsFirst(p1.getIsShipPlacedArr());
+    if (playerObj === firstPlayer) {
+      renderSideShipsFirst(firstPlayer.getIsShipPlacedArr());
       placeSecondPlayerShips();
     }
     else {
-      renderSideShipsSecond(p2.getIsShipPlacedArr());
-      continueGame();
+      renderSideShipsSecond(secondPlayer.getIsShipPlacedArr());
+      continueGameAfterShipsPlacement();
     } 
   };
 }
 
-
+// Initial render for creating board cells and ships on the side
+initialRender();
 // Start the game
-initGame();
-
-
-
+startNewGame();

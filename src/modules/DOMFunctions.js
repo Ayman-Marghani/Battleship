@@ -1,86 +1,103 @@
+import {editCellType} from './boardCellFunctions';
+import {
+  removeChildren,
+  hideElem,
+  showElem,
+  changeFlexDirection,
+  renderEmptyBoard,
+  addSideShipsToDOM,
+  showSideShips,
+} from './helperFunctions';
 // DOM elements 
-const currentPlayerBanner = document.querySelector(".current-player");
+const bannerElem = document.querySelector(".banner");
+const shipPlacementBtns = document.querySelectorAll(".ship-placement-btns");
+// Screens
+const gameModeScreen = document.querySelector(".game-mode-btns");
+const playerNamesForm = document.querySelector(".player-names-form");
+const gameScreen = document.querySelector(".game-screen");
 // First board 
-const shipsContainerFirst = document.querySelector(".first-ships");
+const shipsContainerFirst = document.querySelector(".first-side-ships");
 const firstBoardElem = document.querySelector(".first-board");
-const changeAxisButtonFirst = document.querySelector(".change-axis-first-button");
-const randomizeButtonFirst = document.querySelector(".randomize-first-button");
 // Second board 
-const shipsContainerSecond = document.querySelector(".second-ships");
+const shipsContainerSecond = document.querySelector(".second-side-ships");
 const secondBoardElem = document.querySelector(".second-board");
-const changeAxisButtonSecond = document.querySelector(".change-axis-second-button");
-const randomizeButtonSecond = document.querySelector(".randomize-second-button");
 
-// Helper functions
-function removeChildren(elem) {
-  while (elem.firstChild) {
-    elem.removeChild(elem.firstChild);
-  }
+// # Helper functions
+function showShipPlacementBtns() {
+  shipPlacementBtns.forEach((btn) => {
+    showElem(btn);
+  })
 }
 
-function editCellType(boardElem, cellIndex, type) {
-  // Get the current cell by index
-  const curCell = boardElem.children[cellIndex];
-  // Remove 'empty' type from class list
-  curCell.classList.remove('empty');
-  // Add the type to the class list
-  curCell.classList.add(type);
+// # Main functions
+function renderBanner(text) {
+  bannerElem.textContent = text;
 }
 
-function renderEmptyBoard(boardElem) {
-  const cellsCount = 100;
-  for (let i = 0; i < cellsCount; i++) {
-    const newCellElement = document.createElement('div');
-    newCellElement.setAttribute('index', i);
-    newCellElement.classList.add('cell');
-    boardElem.appendChild(newCellElement);
-  }
+// ## Render Screens functions
+function initialRender() {
+  renderEmptyBoard(firstBoardElem);
+  renderEmptyBoard(secondBoardElem);
+  // Render ships on the side of each board
+  addSideShipsToDOM(shipsContainerFirst);
+  addSideShipsToDOM(shipsContainerSecond);
+}
+function resetDOM() {
+  // Remove all cells in the game boards
+  removeChildren(firstBoardElem);
+  removeChildren(secondBoardElem);
+  // Render boards and ship placement buttons
+  renderEmptyBoard(firstBoardElem);
+  renderEmptyBoard(secondBoardElem);
+  showShipPlacementBtns();
+  // Render ships on the side of boards
+  showSideShips(shipsContainerFirst);
+  showSideShips(shipsContainerSecond);
+  // Hide play again button
+  hideElem(playAgainBtn);
+  // Hide all screens
+  hideElem(gameModeScreen);
+  hideElem(gameScreen);
+  hideElem(playerNamesForm);
+}
+function renderGameModeScreen() {
+  // Hide other screens
+  hideElem(gameScreen);
+  hideElem(playerNamesForm);
+  // Show game mode screen
+  renderBanner('Choose Game Mode');
+  showElem(gameModeScreen);
+}
+function renderPlayerNamesFormScreen(isComputerMode) {
+  // TODO: if computer mode hide second input div and make it not required
+  // else show it and make it required
+  // Hide other screens
+  hideElem(gameModeScreen);
+  hideElem(gameScreen);
+  // Show player names form screen
+  renderBanner('Enter Player(s) Name');
+  showElem(playerNamesForm);
+}
+function renderGameScreen() {
+  // Hide other screens
+  hideElem(gameModeScreen);
+  hideElem(playerNamesForm);
+  // Show game screen and ship placement buttons
+  showElem(gameScreen);
+  showShipPlacementBtns();
 }
 
-function changeFlexDirection(elem) {
-  console.log(elem.classList)
-  console.log("flex direction: ", elem.style.flexDirection)
-  if (elem.style.flexDirection === 'column') {
-    elem.style.flexDirection = 'row';
-  }
-  else {
-    elem.style.flexDirection = 'column';
-  }
-}
-
-// Main functions
-function renderPlayerBanner(text) {
-  currentPlayerBanner.textContent = text;
-}
-
-// Side ships functions
-function addSideShipsToDOM(shipsContainerElem) {
-  shipsContainerElem.style.flexDirection = 'column';
-  const shipsSizes = [5, 4, 3, 3, 2]; // I think I should take it as input
-  for (const size of shipsSizes) {
-    const newShipElem = document.createElement('div');
-    newShipElem.classList.add('ship-elem');
-    newShipElem.style.flexDirection = 'row';
-    // Ship Cells
-    for (let i = 0; i < size; i++) {
-      const newCellElement = document.createElement('div');
-      newCellElement.classList.add(...['cell', 'ship']);
-      newShipElem.appendChild(newCellElement);
-    }
-    shipsContainerElem.appendChild(newShipElem);
-  }
-}
-
+// ## Side ships functions
 function renderSideShips(shipsContainerElem) {
   return (shipsPlacedArr) => {
     for (let i = 0; i < shipsPlacedArr.length; i++) {
       const shipElem = shipsContainerElem.children[i];
       // If ship is placed on board hide it from the side
       if (shipsPlacedArr[i]) {
-        shipElem.classList.add('hidden-ship');
+        hideElem(shipElem);
       }
       else {
-        shipElem.classList.remove('hidden-ship');
+        showElem(shipElem);
       }
     }
   };
@@ -99,21 +116,7 @@ function changeSideShipsAxis(shipsContainerElem) {
 const changeSideShipsAxisFirst = changeSideShipsAxis(shipsContainerFirst);
 const changeSideShipsAxisSecond = changeSideShipsAxis(shipsContainerSecond);
 
-
-// Game board functions
-function removeBoardsCells() {
-  removeChildren(firstBoardElem);
-  removeChildren(secondBoardElem);
-}
-
-function initialRender() {
-  renderEmptyBoard(firstBoardElem);
-  renderEmptyBoard(secondBoardElem);
-  // Render ships on the side of each board
-  addSideShipsToDOM(shipsContainerFirst);
-  addSideShipsToDOM(shipsContainerSecond);
-}
-
+// ## Game board functions
 function renderBoard(boardElem) {
   return (playerObj) => {
     const gamebaord = playerObj.getBoard();
@@ -160,37 +163,29 @@ function showBoard(boardElem) {
 const showFirstBoard = showBoard(firstBoardElem);
 const showSecondBoard = showBoard(secondBoardElem);
 
-// Ship placement buttons functions
-function removeShipPlacementButtons() {
-  changeAxisButtonFirst.remove();
-  changeAxisButtonSecond.remove();
-  randomizeButtonFirst.remove();
-  randomizeButtonSecond.remove();
-}
-// Board cell functions
-function isCellEmptyOrShip(cell) {
-  return cell.classList.contains('empty') || cell.classList.contains('ship');
-}
-
-function replaceCellClass(cell, currentClass, newClass) {
-  cell.classList.replace(currentClass, newClass);
+// ## Ship placement buttons functions
+function hideShipPlacementBtns() {
+  shipPlacementBtns.forEach((btn) => {
+    hideElem(btn);
+  })
 }
 
 export {
+  renderBanner,
   initialRender,
-  renderPlayerBanner,
+  resetDOM,
+  renderGameModeScreen,
+  renderPlayerNamesFormScreen,
+  renderGameScreen,
   renderSideShipsFirst,
   renderSideShipsSecond,
   changeSideShipsAxisFirst,
   changeSideShipsAxisSecond,
-  removeBoardsCells,
   renderFirstBoard,
   renderSecondBoard,
   hideFirstBoard,
   hideSecondBoard,
   showFirstBoard,
   showSecondBoard,
-  removeShipPlacementButtons,
-  isCellEmptyOrShip,
-  replaceCellClass,
+  hideShipPlacementBtns,
 };

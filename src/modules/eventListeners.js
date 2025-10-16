@@ -1,36 +1,42 @@
 // First board 
 const firstBoardElem = document.querySelector(".first-board");
-const changeAxisButtonFirst = document.querySelector(".change-axis-first-button");
-const randomizeButtonFirst = document.querySelector(".randomize-first-button");
+const changeAxisBtnFirst = document.querySelector(".change-axis-first-btn");
+const randomizeBtnFirst = document.querySelector(".randomize-first-btn");
 // Second board 
 const secondBoardElem = document.querySelector(".second-board");
-const changeAxisButtonSecond = document.querySelector(".change-axis-second-button");
-const randomizeButtonSecond = document.querySelector(".randomize-second-button");
+const changeAxisBtnSecond = document.querySelector(".change-axis-second-btn");
+const randomizeBtnSecond = document.querySelector(".randomize-second-btn");
+
+// TODO: game mode buttons
+
+// TODO: player names form 
+
+// TODO: play again button
 
 // First Board Event Listeners
 function addEventListenersFirstBoard(handleBoardClickFunc, handleChangeAxisFunc, handleRandomizeFunc) {
   firstBoardElem.addEventListener('click', handleBoardClickFunc);
-  changeAxisButtonFirst.addEventListener('click', handleChangeAxisFunc);
-  randomizeButtonFirst.addEventListener('click', handleRandomizeFunc);
+  changeAxisBtnFirst.addEventListener('click', handleChangeAxisFunc);
+  randomizeBtnFirst.addEventListener('click', handleRandomizeFunc);
 }
 
 function removeEventListenersFirstBoard(handleBoardClickFunc, handleChangeAxisFunc, handleRandomizeFunc) {
   firstBoardElem.removeEventListener('click', handleBoardClickFunc);
-  changeAxisButtonFirst.removeEventListener('click', handleChangeAxisFunc);
-  randomizeButtonFirst.removeEventListener('click', handleRandomizeFunc);
+  changeAxisBtnFirst.removeEventListener('click', handleChangeAxisFunc);
+  randomizeBtnFirst.removeEventListener('click', handleRandomizeFunc);
 }
 
 // Second Board Event Listeners
 function addEventListenersSecondBoard(handleBoardClickFunc, handleChangeAxisFunc, handleRandomizeFunc) {
   secondBoardElem.addEventListener('click', handleBoardClickFunc);
-  changeAxisButtonSecond.addEventListener('click', handleChangeAxisFunc);
-  randomizeButtonSecond.addEventListener('click', handleRandomizeFunc);
+  changeAxisBtnSecond.addEventListener('click', handleChangeAxisFunc);
+  randomizeBtnSecond.addEventListener('click', handleRandomizeFunc);
 }
 
 function removeEventListenersSecondBoard(handleBoardClickFunc, handleChangeAxisFunc, handleRandomizeFunc) {
   secondBoardElem.removeEventListener('click', handleBoardClickFunc);
-  changeAxisButtonSecond.removeEventListener('click', handleChangeAxisFunc);
-  randomizeButtonSecond.removeEventListener('click', handleRandomizeFunc);
+  changeAxisBtnSecond.removeEventListener('click', handleChangeAxisFunc);
+  randomizeBtnSecond.removeEventListener('click', handleRandomizeFunc);
 }
 
 // Attack event listeners

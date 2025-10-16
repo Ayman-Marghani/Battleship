@@ -9,28 +9,58 @@
 
 <body>
   <h1>Battleship</h1>
-  <h3 class="current-player"></h3>
+  <h3 class="banner"></h3>
 
-  <div class="boards-container">
+  <!-- Game Mode Screen -->
+  <div class="game-mode-btns"> 
+    <button class="game-mode-btn computer-mode-btn">Computer Mode</button>
+    <button class="game-mode-btn players-mode-btn">2-Player Mode</button>
+  </div>
+
+  <!-- Player Names Form Screen -->
+  <form class="player-names-form">
+    <div class="first-player-name-input">
+      <label for="fname">First Player name:</label>
+      <input type="text" id="fname" name="fname" required>
+    </div>
+
+    <div class="second-player-name-input">
+      <label for="sname">Second Player name:</label>
+      <input type="text" id="sname" name="sname" required>
+    </div>
+    <button type="submit"></button>
+  </form>
+
+  <!-- Game Screen (game boards) -->
+  <div class="game-screen">
     <div class="board-container">
-      <div class="ships-container first-ships"></div>
+      <div class="side-ships-container first-side-ships"></div>
 
       <div>
-        <button class="change-axis-first-button">Change Axis</button>
-        <button class="randomize-first-button">Randomize</button>
         <div class="first-board board"></div>
+        <div class="board-title first-board-title">player 1 board</div>
+        <button class="change-axis-first-btn ship-placement-btns">Change Axis</button>
+        <button class="randomize-first-btn ship-placement-btns">Randomize</button>
       </div>
     </div>
 
     <div class="board-container">
       <div>
-        <button class="change-axis-second-button">Change Axis</button>
-        <button class="randomize-second-button">Randomize</button>
         <div class="second-board board"></div>
+        <div class="board-title second-board-title">player 2 board</div>
+        <button class="change-axis-second-btn ship-placement-btns">Change Axis</button>
+        <button class="randomize-second-btn ship-placement-btns">Randomize</button>
       </div>
-      <div class="ships-container second-ships"></div>
+
+      <div class="side-ships-container second-side-ships"></div>
     </div>
   </div>
+
+  <!-- Play again button -->
+  <button class="play-again-btn">Play Again!</button>
+
+  <!-- Footer -->
+  <footer>Made by <a href="https://github.com/Ayman-Marghani">Ayman</a></footer>
 </body>
 
 </html>

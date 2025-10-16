@@ -62,8 +62,12 @@ body {
   text-align: center;
 }
 
-
-.boards-container {
+.hidden-elem {
+  display: none;
+}
+/************************************************************/
+/* Boards styles */
+.game-screen {
   display: flex;
   justify-content: center;
   gap: 6rem;
@@ -71,7 +75,6 @@ body {
 
 .board-container {
   display: flex;
-  align-items: center;
   gap: 2rem;
 }
 
@@ -82,13 +85,13 @@ body {
   border-top: 1px solid black;
   width: fit-content;
 }
-
+/************************************************************/
+/* Board cell styles */
 .cell {
   height: 2rem;
   width: 2rem;
   border-right: 1px solid black;
   border-bottom: 1px solid black;
-  
 }
 
 .ship {
@@ -110,11 +113,10 @@ body {
 .cell.miss {
   background-color: gray;
 }
-
+/************************************************************/
 /* Side ships */
-.ships-container {
+.side-ships-container {
   display: flex;
-  /* flex-direction: column; */
   gap: 1rem;
 }
 
@@ -124,8 +126,4 @@ body {
   border-top: 1px solid black;
   width: fit-content;
   height: fit-content;
-}
-
-.hidden-ship {
-  display: none;
 }
