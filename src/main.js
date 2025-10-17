@@ -20,8 +20,9 @@ import {
   hideSecondBoard,
   showFirstBoard,
   showSecondBoard,
+  renderBoardsBanner,
   hideShipPlacementBtns,
-} from './modules/DOMFunctions';
+} from './modules/UIFunctions';
 import {
   addEventListenerGameModeBtns,
   removeEventListenerGameModeBtns,
@@ -46,6 +47,12 @@ let computerMode = null;
 let curPlayer = null;
 let firstPlayer = null;
 let secondPlayer = null;
+// Player functions
+let handlePlaceShipFirstPlayer = null;
+let handlePlaceShipSecondPlayer = null;
+let handleFirstPlayerAttack = null;
+let handleSecondPlayerAttack = null
+
 
 // Helper functions
 // Returns the x and y coordinates of a cell based on its index.
@@ -71,18 +78,24 @@ function startNewGame() {
   renderGameModeScreen();
   addEventListenerGameModeBtns(handleGameModeClick);
 }
-
 function initGameScreen() {
-  // TODO: render board titles 
+  // Remove player names form event listener
   removeEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
+  // Define all player functions here
+  handlePlaceShipFirstPlayer = handlePlaceShip(firstPlayer);
+  handlePlaceShipSecondPlayer = handlePlaceShip(secondPlayer);
+  handleFirstPlayerAttack = handlePlayerAttack(firstPlayer, secondPlayer);
+  handleSecondPlayerAttack = handlePlayerAttack(secondPlayer, firstPlayer);
   // Render game Screen
   renderGameScreen();
+  // Render boards banner
+  renderBoardsBanner(firstPlayer.name, secondPlayer.name);
   // First player place ships
   placeFirstPlayerShips();
 }
 function continueGameAfterShipsPlacement() {
   // Remove second board event Listeners
-  removeEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(secondPlayer), handleRandomize(secondPlayer));
+  removeEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxis(secondPlayer), handleRandomize(secondPlayer));
   // Remove ship placement buttons
   hideShipPlacementBtns();
   // Render Second board
@@ -124,24 +137,21 @@ function endGame(winningPlayerName) {
   // write handlePlayAgainClick
     // remove eventlistener for play again button
     // start the game again
-    ``
+    // startNewGame();
   // Remove attack event listener for all boards
   removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
 }
-
 function moveToPlayerNamesFormScreen(computerMode) {
   removeEventListenerGameModeBtns(handleGameModeClick);
   renderPlayerNamesFormScreen(computerMode);
   addEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
 }
 
-
 // ## Game mode screen functions
 function handleGameModeClick(event) {
   computerMode = event.target.classList.contains('computer-mode-btn');
   moveToPlayerNamesFormScreen(computerMode);
 }
-
 function handlePlayerNamesFormSubmit(event) { 
   event.preventDefault();
   // Init firstPlayer
@@ -161,6 +171,7 @@ function handlePlayerNamesFormSubmit(event) {
 // ## Player attack functions
 function handlePlayerAttack(attacker, attackedPlayer) {
   return (event) => {
+    console.log("handle attack triggered")
     // Make sure it's current player turn
     if (curPlayer !== attacker.name) {
       return;
@@ -196,19 +207,17 @@ function handlePlayerAttack(attacker, attackedPlayer) {
     }
   };
 }
-const handleFirstPlayerAttack = handlePlayerAttack(firstPlayer, secondPlayer);
-const handleSecondPlayerAttack = handlePlayerAttack(secondPlayer, firstPlayer);
 
 // ## Ships placement functions
 function placeFirstPlayerShips() {
   // First player turn to place Ships
   renderBanner(`${firstPlayer.name}'s turn to place ships`);
   // Event listener for first board
-  addEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(firstPlayer), handleRandomize(firstPlayer));
+  addEventListenersFirstBoard(handlePlaceShipFirstPlayer, handleChangeAxis(firstPlayer), handleRandomize(firstPlayer));
 }
 function placeSecondPlayerShips() {
   // Remove first board event Listeners
-  removeEventListenersFirstBoard(handleFirstPlayerPlaceShip, handleChangeAxis(firstPlayer), handleRandomize(firstPlayer));
+  removeEventListenersFirstBoard(handlePlaceShipFirstPlayer, handleChangeAxis(firstPlayer), handleRandomize(firstPlayer));
   // Render First board
   renderFirstBoard(firstPlayer);
   // Hide first board from the second player
@@ -217,17 +226,23 @@ function placeSecondPlayerShips() {
     // Second player turn to place Ships
     renderBanner(`${secondPlayer.name}'s Place Ships`);
     // Event listener for second board
-    addEventListenersSecondBoard(handleSecondPlayerPlaceShip, handleChangeAxis(secondPlayer), handleRandomize(secondPlayer));
+    addEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxis(secondPlayer), handleRandomize(secondPlayer));
   }, 1000);
 }
 function handlePlaceShip(playerObj) {
   return (event) => {
+    // If ship are already placed return
+    if (!playerObj.isAllShipsPlaced()) {
+      return;
+    }
+    console.log("handle place ships triggered")
     // Get the clicked cell and get its coordinates
     const curCell = event.target;
     const [x, y] = getCellCoordinates(curCell);
     // Place the ship in the clicked cell
     const isShipPlaced = playerObj.placeShip(x, y) 
     if (isShipPlaced) {
+      renderBanner(`${curPlayer}'s turn to place ships`);
       // Render current player board and rerender ships on the side
       if (playerObj === firstPlayer) {
         renderFirstBoard(firstPlayer);
@@ -239,7 +254,7 @@ function handlePlaceShip(playerObj) {
       }
     }
     else {
-      // Display ship placement error
+      // Display ship placement error 
       renderBanner("Invalid Placement! Try Again");
     }
     // If all ships are placed start the game
@@ -253,8 +268,6 @@ function handlePlaceShip(playerObj) {
     }
   };
 }
-const handleFirstPlayerPlaceShip = handlePlaceShip(firstPlayer);
-const handleSecondPlayerPlaceShip = handlePlaceShip(secondPlayer);
 
 // ### Handle change axis and randomize buttons functions
 function handleChangeAxis(playerObj) {

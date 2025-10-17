@@ -127,3 +127,13 @@ body {
   width: fit-content;
   height: fit-content;
 }
+
+/* Hide a ship */
+.ship-elem.hidden-ship {
+  border: none;
+}
+
+.ship-elem.hidden-ship .cell {
+  background-color: white;
+  border: none;
+}

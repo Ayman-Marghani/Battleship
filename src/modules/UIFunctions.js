@@ -22,9 +22,11 @@ const secondNameContainer = document.querySelector(".second-player-name-input");
 // First board 
 const shipsContainerFirst = document.querySelector(".first-side-ships");
 const firstBoardElem = document.querySelector(".first-board");
+const firstBoardBanner = document.querySelector(".first-board-title");
 // Second board 
 const shipsContainerSecond = document.querySelector(".second-side-ships");
 const secondBoardElem = document.querySelector(".second-board");
+const secondBoardBanner = document.querySelector(".second-board-title");
 // Play again button
 const playAgainBtn = document.querySelector(".play-again-btn");
 
@@ -188,6 +190,11 @@ function showBoard(boardElem) {
 const showFirstBoard = showBoard(firstBoardElem);
 const showSecondBoard = showBoard(secondBoardElem);
 
+function renderBoardsBanner(firstPlayerName, secondPlayerName) {
+  firstBoardBanner.textContent = firstPlayerName + "'s board";
+  secondBoardBanner.textContent = secondPlayerName + "'s board";
+}
+
 // ## Ship placement buttons functions
 function hideShipPlacementBtns() {
   shipPlacementBtns.forEach((btn) => {
@@ -215,5 +222,6 @@ export {
   hideSecondBoard,
   showFirstBoard,
   showSecondBoard,
+  renderBoardsBanner,
   hideShipPlacementBtns,
 };
