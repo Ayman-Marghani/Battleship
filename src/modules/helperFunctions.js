@@ -35,7 +35,7 @@ function changeFlexDirection(elem) {
     }
   }
 }
-// ## Board functions
+// # Board functions
 // ## Game board functions
 function renderEmptyBoard(boardElem) {
   if (boardElem) {
@@ -74,6 +74,15 @@ function showSideShips(shipsContainerElem) {
     }
   }
 }
+// ## Board cell functions
+function editCellType(boardElem, cellIndex, type) {
+  // Get the current cell by index
+  const curCell = boardElem.children[cellIndex];
+  // Remove 'empty' type from class list
+  curCell.classList.remove('empty');
+  // Add the type to the class list
+  curCell.classList.add(type);
+}
 
 export {
   removeChildren,
@@ -83,4 +92,5 @@ export {
   renderEmptyBoard,
   addSideShipsToDOM,
   showSideShips,
+  editCellType,
 };  

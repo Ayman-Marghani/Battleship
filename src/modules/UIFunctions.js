@@ -1,4 +1,4 @@
-import {editCellType} from './boardCellFunctions';
+// Import Helper functions
 import {
   removeChildren,
   hideElem,
@@ -7,7 +7,9 @@ import {
   renderEmptyBoard,
   addSideShipsToDOM,
   showSideShips,
+  editCellType,
 } from './helperFunctions';
+
 // DOM elements 
 const bannerElem = document.querySelector(".banner");
 const shipPlacementBtns = document.querySelectorAll(".ship-placement-btns");
@@ -29,13 +31,6 @@ const secondBoardElem = document.querySelector(".second-board");
 const secondBoardBanner = document.querySelector(".second-board-title");
 // Play again button
 const playAgainBtn = document.querySelector(".play-again-btn");
-
-// # Helper functions
-function showShipPlacementBtns() {
-  shipPlacementBtns.forEach((btn) => {
-    showElem(btn);
-  })
-}
 
 // # Main functions
 function renderBanner(text) {
@@ -60,7 +55,9 @@ function resetDOM() {
   // Render boards and ship placement buttons
   renderEmptyBoard(firstBoardElem);
   renderEmptyBoard(secondBoardElem);
-  showShipPlacementBtns();
+  shipPlacementBtns.forEach((btn) => {
+    showElem(btn);
+  });
   // Render ships on the side of boards
   showSideShips(shipsContainerFirst);
   showSideShips(shipsContainerSecond);
@@ -85,7 +82,9 @@ function renderGameScreen() {
   hideElem(playerNamesForm);
   // Show game screen and ship placement buttons
   showElem(gameScreen);
-  showShipPlacementBtns();
+  shipPlacementBtns.forEach((btn) => {
+    showElem(btn);
+  });
 }
 function showPlayAgainBtn() {
   showElem(playAgainBtn);
@@ -205,6 +204,11 @@ function hideShipPlacementBtns() {
   })
 }
 
+// # Board cell functions
+function replaceCellClass(cell, currentClass, newClass) {
+  cell.classList.replace(currentClass, newClass);
+}
+
 export {
   renderBanner,
   initialRender,
@@ -227,4 +231,5 @@ export {
   showSecondBoard,
   renderBoardsBanner,
   hideShipPlacementBtns,
+  replaceCellClass,
 };

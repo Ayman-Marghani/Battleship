@@ -22,6 +22,7 @@ import {
   showSecondBoard,
   renderBoardsBanner,
   hideShipPlacementBtns,
+  replaceCellClass,
 } from './modules/UIFunctions';
 import {
   addEventListenerGameModeBtns,
@@ -37,10 +38,6 @@ import {
   addEventListenerPlayAgainBtn,
   removeEventListenerPlayAgainBtn,
 } from './modules/eventListeners';
-import {
-  isCellEmptyOrShip,
-  replaceCellClass,
-} from './modules/boardCellFunctions';
 // CSS styles file
 import './styles.css';
 
@@ -197,7 +194,8 @@ function handlePlayerAttack(attacker, attackedPlayer) {
     }
     const curCell = event.target;
     // make sure it's an empty or ship cell
-    if (isCellEmptyOrShip(curCell)) {      
+    const isEmptyOrShip = curCell.classList.contains('empty') || curCell.classList.contains('ship');
+    if (isEmptyOrShip) {      
       // Get x and y coordinates
       const [x, y] = getCellCoordinates(curCell);
       // Attack second board

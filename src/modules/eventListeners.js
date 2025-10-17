@@ -33,8 +33,6 @@ function removeEventListenerPlayerNamesForm(handleFormSubmit) {
   playerNamesForm.removeEventListener("submit", handleFormSubmit);
 }
 
-// TODO: play again button
-
 // First Board Event Listeners
 function addEventListenersFirstBoard(handleBoardClickFunc, handleChangeAxisFunc, handleRandomizeFunc) {
   firstBoardElem.addEventListener('click', handleBoardClickFunc);
