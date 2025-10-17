@@ -54,6 +54,9 @@ function resetDOM() {
   // Remove all cells in the game boards
   removeChildren(firstBoardElem);
   removeChildren(secondBoardElem);
+  // Reset player names form input values
+  firstNameInput.value = '';
+  secondNameInput.value = '';
   // Render boards and ship placement buttons
   renderEmptyBoard(firstBoardElem);
   renderEmptyBoard(secondBoardElem);

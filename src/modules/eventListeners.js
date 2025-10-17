@@ -69,6 +69,14 @@ function removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlay
   secondBoardElem.removeEventListener('click', handleFirstPlayerAttack);
 }
 
+// Play again button event listener
+function addEventListenerPlayAgainBtn(handlePlayAgainClick) {
+  playAgainBtn.addEventListener('click', handlePlayAgainClick);
+} 
+function removeEventListenerPlayAgainBtn(handlePlayAgainClick) {
+  playAgainBtn.removeEventListener('click', handlePlayAgainClick);
+} 
+
 export {
   addEventListenerGameModeBtns,
   removeEventListenerGameModeBtns,
@@ -80,4 +88,6 @@ export {
   removeEventListenersSecondBoard,
   addEventListenersForAttack,
   removeEventListenersForAttack,
+  addEventListenerPlayAgainBtn,
+  removeEventListenerPlayAgainBtn,
 };
