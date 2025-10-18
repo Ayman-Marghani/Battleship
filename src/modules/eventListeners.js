@@ -59,11 +59,17 @@ function removeEventListenersSecondBoard(handleBoardClickFunc, handleChangeAxisF
 
 // Attack event listeners
 function addEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack) {
-  firstBoardElem.addEventListener('click', handleSecondPlayerAttack);
+  // Handle second player attack if 2 players mode 
+  if (handleSecondPlayerAttack !== null) {
+    firstBoardElem.addEventListener('click', handleSecondPlayerAttack);
+  }
   secondBoardElem.addEventListener('click', handleFirstPlayerAttack);
 }
 function removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack) {
-  firstBoardElem.removeEventListener('click', handleSecondPlayerAttack);
+  // Handle second player attack if 2 players mode 
+  if (handleSecondPlayerAttack !== null) {
+    firstBoardElem.removeEventListener('click', handleSecondPlayerAttack);
+  }
   secondBoardElem.removeEventListener('click', handleFirstPlayerAttack);
 }
 

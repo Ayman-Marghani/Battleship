@@ -55,9 +55,7 @@ function resetDOM() {
   // Render boards and ship placement buttons
   renderEmptyBoard(firstBoardElem);
   renderEmptyBoard(secondBoardElem);
-  shipPlacementBtns.forEach((btn) => {
-    showElem(btn);
-  });
+  shipPlacementBtns.forEach(showElem);
   // Render ships on the side of boards
   showSideShips(shipsContainerFirst);
   showSideShips(shipsContainerSecond);
@@ -76,15 +74,25 @@ function renderGameModeScreen() {
   renderBanner('Choose Game Mode');
   showElem(gameModeScreen);
 }
-function renderGameScreen() {
+function renderGameScreen(isComputerMode) {
   // Hide other screens
   hideElem(gameModeScreen);
   hideElem(playerNamesForm);
   // Show game screen and ship placement buttons
   showElem(gameScreen);
-  shipPlacementBtns.forEach((btn) => {
-    showElem(btn);
-  });
+  // Separate first player buttons from second player buttons
+  const btnsArr = Array.from(shipPlacementBtns); 
+  const firstPlayerShipPlacementBtns = btnsArr.slice(0, 2);      
+  const secondPlayerShipPlacementBtns  = btnsArr.slice(-2); 
+  // Show first player buttons 
+  firstPlayerShipPlacementBtns.forEach(showElem);
+  // If computer mode hide second player buttons, else show them
+  if (isComputerMode) {
+    secondPlayerShipPlacementBtns.forEach(hideElem);
+  }
+  else {
+    secondPlayerShipPlacementBtns.forEach(showElem);
+  }
 }
 function showPlayAgainBtn() {
   showElem(playAgainBtn);
@@ -199,9 +207,7 @@ function renderBoardsBanner(firstPlayerName, secondPlayerName) {
 
 // ## Ship placement buttons functions
 function hideShipPlacementBtns() {
-  shipPlacementBtns.forEach((btn) => {
-    hideElem(btn);
-  })
+  shipPlacementBtns.forEach(hideElem);
 }
 
 // # Board cell functions

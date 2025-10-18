@@ -42,7 +42,8 @@ import {
 import './styles.css';
 
 // Global variables
-let computerMode = null;
+const GAME_BOARD_SIZE = 10;
+let isComputerMode = null;
 let curPlayer = null;
 let firstPlayer = null;
 let secondPlayer = null;
@@ -63,8 +64,13 @@ function getCellCoordinates(cell) {
   // Get index of cell
   const index = Number(cell.getAttribute('index'));
   // Calc x and y coordinates
-  const x = Math.floor(index / 10);
-  const y = index % 10;
+  const x = Math.floor(index / GAME_BOARD_SIZE);
+  const y = index % GAME_BOARD_SIZE;
+  return [x, y];
+}
+function getRandomCoord() {
+  const x = Math.floor(Math.random() * GAME_BOARD_SIZE);
+  const y = Math.floor(Math.random() * GAME_BOARD_SIZE);
   return [x, y];
 }
 
@@ -72,7 +78,7 @@ function getCellCoordinates(cell) {
 // ## Game flow functions
 function startNewGame() {
   // Reset global variables
-  computerMode = null;
+  isComputerMode = null;
   curPlayer = null;
   firstPlayer = null;
   secondPlayer = null;
@@ -95,29 +101,40 @@ function initGameScreen() {
   // Remove player names form event listener
   removeEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
   // Define all player functions here
+  // First Player
   handlePlaceShipFirstPlayer = handlePlaceShip(firstPlayer);
-  handlePlaceShipSecondPlayer = handlePlaceShip(secondPlayer);
   handleFirstPlayerAttack = handlePlayerAttack(firstPlayer, secondPlayer);
-  handleSecondPlayerAttack = handlePlayerAttack(secondPlayer, firstPlayer);
   handleChangeAxisFirstBoard = handleChangeAxis(firstPlayer);
-  handleChangeAxisSecondBoard = handleChangeAxis(secondPlayer);
   handleRandomizeFirstBoard = handleRandomize(firstPlayer);
-  handleRandomizeSecondBoard = handleRandomize(secondPlayer);
+  // Define second player functions only if game mode is 2 players
+  if (!isComputerMode) {
+    // Second player
+    handlePlaceShipSecondPlayer = handlePlaceShip(secondPlayer);
+    handleSecondPlayerAttack = handlePlayerAttack(secondPlayer, firstPlayer);
+    handleChangeAxisSecondBoard = handleChangeAxis(secondPlayer);
+    handleRandomizeSecondBoard = handleRandomize(secondPlayer);
+  }
   // Render game Screen
-  renderGameScreen();
+  renderGameScreen(isComputerMode);
   // Render boards banner
   renderBoardsBanner(firstPlayer.name, secondPlayer.name);
   // First player place ships
   placeFirstPlayerShips();
 }
 function continueGameAfterShipsPlacement() {
-  // Remove second board event Listeners
-  removeEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxisSecondBoard, handleRandomizeSecondBoard);
+  // If 2 players mode remove second board event Listeners
+  if (!isComputerMode) {
+    removeEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxisSecondBoard, handleRandomizeSecondBoard);
+  }
   // Remove ship placement buttons
   hideShipPlacementBtns();
 
   finishedPlacingShips = true;
-  // Render Second board
+  // Hide second board if computer mode
+  if (isComputerMode) {
+    hideSecondBoard();
+  }
+  // Render Second board 
   renderSecondBoard(secondPlayer);
   // Hide second board and show first board
   setTimeout(() => {
@@ -130,25 +147,33 @@ function continueGameAfterShipsPlacement() {
   }, 1000);
 }
 function switchPlayerTurn(nextPlayerName) {
-  // change global variable
+  // change curPlayer global variable
   curPlayer = nextPlayerName;
-  // change player turn banner
+  // render player turn banner
   renderBanner(`${curPlayer}'s turn`);
-
-  if (curPlayer === firstPlayer.name) {
-    // show next player board
+  if (curPlayer === firstPlayer.name) { // First player case
+    // show first player board
     showFirstBoard(); 
-    // hide other player board
+    // hide second player board
     hideSecondBoard();
   }
-  else {
-    // show next player board 
-    showSecondBoard();
-    // hide other player board
-    hideFirstBoard();
+  else { // Second player case
+    if (isComputerMode) { // Computer mode
+      setTimeout(() => {
+        // Make computer attack first player
+        computerAttack();
+      }, 1000);
+    }
+    else { // 2 players mode
+      // Show second player board 
+      showSecondBoard();
+      // Hide first player board
+      hideFirstBoard();
+    }
   }
 }
 function endGame(winningPlayerName) {
+  console.log("End game function called");
   renderBanner(`${winningPlayerName} Won!`);
   // Show play again button
   showPlayAgainBtn();
@@ -157,22 +182,22 @@ function endGame(winningPlayerName) {
   // Remove attack event listener for all boards
   removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
 }
-function moveToPlayerNamesFormScreen(computerMode) {
+function moveToPlayerNamesFormScreen(isComputerMode) {
   removeEventListenerGameModeBtns(handleGameModeClick);
-  renderPlayerNamesFormScreen(computerMode);
+  renderPlayerNamesFormScreen(isComputerMode);
   addEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
 }
 
 // ## Game mode screen functions
 function handleGameModeClick(event) {
-  computerMode = event.target.classList.contains('computer-mode-btn');
-  moveToPlayerNamesFormScreen(computerMode);
+  isComputerMode = event.target.classList.contains('computer-mode-btn');
+  moveToPlayerNamesFormScreen(isComputerMode);
 }
 function handlePlayerNamesFormSubmit(event) { 
   event.preventDefault();
   // Init firstPlayer
   firstPlayer = new Player(false, getFirstPlayerName());
-  if (computerMode) {
+  if (isComputerMode) {
     // Init second player (computer)
     secondPlayer = new Player(true);
   }
@@ -211,11 +236,12 @@ function handlePlayerAttack(attacker, attackedPlayer) {
         }
       }
       else { // Miss case
-        // replace empty class with miss class
+        // Replace empty class with miss class
         replaceCellClass(curCell, 'empty', 'miss');
-        // change turn
+        // Switch to next player
         switchPlayerTurn(attackedPlayer.name);
       }
+      console.log("inside attack handler before game end check: ", attacker, attackedPlayer)
       // check if game ended
       if (attackedPlayer.isLoser()) {
         // call End game function 
@@ -239,11 +265,17 @@ function placeSecondPlayerShips() {
   renderFirstBoard(firstPlayer);
   // Hide first board from the second player
   setTimeout( () => {
-    hideFirstBoard();
     // Second player turn to place Ships
-    renderBanner(`${secondPlayer.name}'s Place Ships`);
-    // Event listener for second board
-    addEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxisSecondBoard, handleRandomizeSecondBoard);
+    renderBanner(`${secondPlayer.name}'s turn to place ships`);
+    if (isComputerMode) { // Computer mode
+      placeComputerShips();
+    }
+    else { // 2 players mode
+      // Hide first board
+      hideFirstBoard();
+      // Event listener for second board
+      addEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxisSecondBoard, handleRandomizeSecondBoard);
+    }
   }, 1000);
 }
 function handlePlaceShip(playerObj) {
@@ -312,8 +344,39 @@ function handleRandomize(playerObj) {
     } 
   };
 }
+// # Computer functions
+function placeComputerShips() {
+  // Place ships randomly and render side ships
+  secondPlayer.randomizeShips();
+  renderSideShipsSecond(secondPlayer.getIsShipPlacedArr());
+  // Move to next step
+  continueGameAfterShipsPlacement();
+}
+function computerAttack() {
+  // Get random coordinates
+  const x = Math.floor(Math.random() * GAME_BOARD_SIZE);
+  const y = Math.floor(Math.random() * GAME_BOARD_SIZE);
+  // Attack first player
+  const isHit = firstPlayer.receiveAttack(x, y);
+  console.log("Computer is attacking at: ", x, y, " | isHit: ", isHit);
+  // Render first player board after being attacked
+  renderFirstBoard(firstPlayer);
+  if (isHit) { // Hit case
+    // Check if game ended
+    if (firstPlayer.isLoser()) {
+      // Call End game function 
+      endGame(secondPlayer.name);
+    }
+    // Make computer attack again
+    switchPlayerTurn(secondPlayer.name);
+  }
+  else { // miss case
+    // Switch to first player
+    switchPlayerTurn(firstPlayer.name);
+  }
+}
 
-// ## Handle play again button function
+// # Handle play again button function
 function handlePlayAgainClick(event) {
   // remove event listener for play again button
   removeEventListenerPlayAgainBtn(handlePlayAgainClick);
