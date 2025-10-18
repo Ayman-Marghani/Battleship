@@ -145,13 +145,13 @@ class Gameboard {
     for (let i = 0; i < this.shipsSizes.length; i++) {
       // Random direction
       this.shipsHorizontal[i] = this.getRandomBool();
-      // Generate random coordinates
-      let isPlaced = false;
-      while (!isPlaced) {
+      let isPlaced = null;
+      do {
+        // Generate random coordinates
         const x = Math.floor(Math.random() * this.GAME_BOARD_SIZE);
         const y = Math.floor(Math.random() * this.GAME_BOARD_SIZE);
         isPlaced = this.placeShip(x, y);
-      }
+      } while (!isPlaced);
     }
   }
 
