@@ -1,5 +1,14 @@
-// # Helper functions
-// ## General functions
+const GAME_BOARD_SIZE = 10;
+// # General functions
+function isCoordValid(x, y) {
+  // Invalid coordinates (out of board)
+  if (x < 0 || x >= GAME_BOARD_SIZE || y < 0 || y >= GAME_BOARD_SIZE) {
+    return false;
+  }
+  return true;
+}
+// # DOM functions
+// ## General DOM functions
 function removeChildren(elem) {
   while (elem && elem.firstChild) {
     elem.removeChild(elem.firstChild);
@@ -35,8 +44,8 @@ function changeFlexDirection(elem) {
     }
   }
 }
-// # Board functions
-// ## Game board functions
+// ## Board functions
+// ### Game board functions
 function renderEmptyBoard(boardElem) {
   if (boardElem) {
     const cellsCount = 100;
@@ -48,7 +57,7 @@ function renderEmptyBoard(boardElem) {
     }
   }
 }
-// ## Side Ships functions
+// ### Side Ships functions
 function addSideShipsToDOM(shipsContainerElem) {
   if (shipsContainerElem) {
     shipsContainerElem.style.flexDirection = 'column';
@@ -74,7 +83,7 @@ function showSideShips(shipsContainerElem) {
     }
   }
 }
-// ## Board cell functions
+// ### Board cell functions
 function editCellType(boardElem, cellIndex, type) {
   // Get the current cell by index
   const curCell = boardElem.children[cellIndex];
@@ -83,8 +92,27 @@ function editCellType(boardElem, cellIndex, type) {
   // Add the type to the class list
   curCell.classList.add(type);
 }
+function replaceCellClass(cell, currentClass, newClass) {
+  cell.classList.replace(currentClass, newClass);
+}
+function isEmptyOrShipCell(cell) {
+  console.log("checking isEmptyOrShipCell: ", cell);
+  const emptyOrShip = cell.classList.contains('empty') || cell.classList.contains('ship');
+  const hitOrMiss = cell.classList.contains('hit') || cell.classList.contains('miss');
+  return (emptyOrShip) && !hitOrMiss;
+}
+// Returns the x and y coordinates of a cell based on its index.
+function getCellCoords(cell) {
+  // Get index of cell
+  const index = Number(cell.getAttribute('index'));
+  // Calc x and y coordinates
+  const x = Math.floor(index / GAME_BOARD_SIZE);
+  const y = index % GAME_BOARD_SIZE;
+  return [x, y];
+}
 
 export {
+  isCoordValid,
   removeChildren,
   hideElem,
   showElem,
@@ -93,4 +121,7 @@ export {
   addSideShipsToDOM,
   showSideShips,
   editCellType,
+  replaceCellClass,
+  isEmptyOrShipCell,
+  getCellCoords,
 };  

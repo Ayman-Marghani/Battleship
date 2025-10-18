@@ -1,6 +1,12 @@
 // JS modules
 import Player from './modules/player';
 import {
+  isCoordValid,
+  replaceCellClass,
+  isEmptyOrShipCell,
+  getCellCoords,
+} from './modules/helperFunctions';
+import {
   renderBanner,
   initialRender,
   resetDOM,
@@ -22,7 +28,7 @@ import {
   showSecondBoard,
   renderBoardsBanner,
   hideShipPlacementBtns,
-  replaceCellClass,
+  getCellFromCoordsFirstBoard,
 } from './modules/UIFunctions';
 import {
   addEventListenerGameModeBtns,
@@ -41,14 +47,18 @@ import {
 // CSS styles file
 import './styles.css';
 
-// Global variables
+// # Global variables
 const GAME_BOARD_SIZE = 10;
+// ## Game mode and state variables
 let isComputerMode = null;
 let curPlayer = null;
+let finishedPlacingShips = false;
+// ## Computer variables
+let hitCellNeighborCoordsQueue = []; 
+// ## Players Objects
 let firstPlayer = null;
 let secondPlayer = null;
-let finishedPlacingShips = false;
-// Player functions
+// ## Players functions
 let handlePlaceShipFirstPlayer = null;
 let handlePlaceShipSecondPlayer = null;
 let handleFirstPlayerAttack = null;
@@ -58,20 +68,48 @@ let handleChangeAxisSecondBoard = null;
 let handleRandomizeFirstBoard = null;
 let handleRandomizeSecondBoard = null;
 
-// Helper functions
-// Returns the x and y coordinates of a cell based on its index.
-function getCellCoordinates(cell) {
-  // Get index of cell
-  const index = Number(cell.getAttribute('index'));
-  // Calc x and y coordinates
-  const x = Math.floor(index / GAME_BOARD_SIZE);
-  const y = index % GAME_BOARD_SIZE;
-  return [x, y];
+// # Helper functions
+function updateHitCellNeighborCoordsQueue(x, y) {
+  // Neighbor indices arrays
+  const neighborXArr = [-1, 1, 0, 0]; 
+  const neighborYArr = [0, 0, -1, 1]; 
+  for (let i = 0; i < neighborXArr.length; i++) {
+    const neighborX = x + neighborXArr[i];
+    const neighborY = y + neighborYArr[i];
+    // If neighbor coords are valid and cell is empty or ship, push them to the queue
+    if (isCoordValid(neighborX, neighborY)) {
+      const hitCell = getCellFromCoordsFirstBoard(neighborX, neighborY);
+      if (isEmptyOrShipCell(hitCell)) {
+        hitCellNeighborCoordsQueue.push([neighborX, neighborY]);
+      }
+    }
+  }
 }
-function getRandomCoord() {
-  const x = Math.floor(Math.random() * GAME_BOARD_SIZE);
-  const y = Math.floor(Math.random() * GAME_BOARD_SIZE);
-  return [x, y];
+function getHitCellNeighborCoords() {
+  while (hitCellNeighborCoordsQueue.length !== 0) {
+    // Get the first coordinates in the queue
+    const [x, y] = hitCellNeighborCoordsQueue.shift();
+    const cell = getCellFromCoordsFirstBoard(x, y);
+    // Make sure the cell is empty or ship
+    if (isEmptyOrShipCell(cell)) {
+      return [x, y];
+    }
+  }
+  return null;
+}
+
+function getRandomCoords() {
+  for (let cnt = 0; cnt < 100; cnt++) {
+    // Get random coordinates
+    const x = Math.floor(Math.random() * GAME_BOARD_SIZE);
+    const y = Math.floor(Math.random() * GAME_BOARD_SIZE);
+    // Make sure the cell is empty or ship
+    const cell = getCellFromCoordsFirstBoard(x, y);
+    if (isEmptyOrShipCell(cell)) {
+      return [x, y];
+    }
+  }
+  return null;
 }
 
 // # Main functions
@@ -80,9 +118,10 @@ function startNewGame() {
   // Reset global variables
   isComputerMode = null;
   curPlayer = null;
+  finishedPlacingShips = false;
+  hitCellNeighborCoordsQueue = [];
   firstPlayer = null;
   secondPlayer = null;
-  finishedPlacingShips = false;
   // Reset player functions
   handlePlaceShipFirstPlayer = null;
   handlePlaceShipSecondPlayer = null;
@@ -144,7 +183,7 @@ function continueGameAfterShipsPlacement() {
     renderBanner(`${curPlayer}'s turn`);
     // Add Attack event listeners for each board
     addEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
-  }, 1000);
+  }, 1500);
 }
 function switchPlayerTurn(nextPlayerName) {
   // change curPlayer global variable
@@ -173,7 +212,6 @@ function switchPlayerTurn(nextPlayerName) {
   }
 }
 function endGame(winningPlayerName) {
-  console.log("End game function called");
   renderBanner(`${winningPlayerName} Won!`);
   // Show play again button
   showPlayAgainBtn();
@@ -212,17 +250,15 @@ function handlePlayerNamesFormSubmit(event) {
 // ## Player attack function
 function handlePlayerAttack(attacker, attackedPlayer) {
   return (event) => {
-    console.log("handle attack triggered")
     // Make sure it's current player turn
     if (curPlayer !== attacker.name) {
       return;
     }
     const curCell = event.target;
     // make sure it's an empty or ship cell
-    const isEmptyOrShip = curCell.classList.contains('empty') || curCell.classList.contains('ship');
-    if (isEmptyOrShip) {      
+    if (isEmptyOrShipCell(curCell)) {      
       // Get x and y coordinates
-      const [x, y] = getCellCoordinates(curCell);
+      const [x, y] = getCellCoords(curCell);
       // Attack second board
       const isHit = attackedPlayer.receiveAttack(x, y);
       if (isHit) { // Hit case
@@ -241,7 +277,6 @@ function handlePlayerAttack(attacker, attackedPlayer) {
         // Switch to next player
         switchPlayerTurn(attackedPlayer.name);
       }
-      console.log("inside attack handler before game end check: ", attacker, attackedPlayer)
       // check if game ended
       if (attackedPlayer.isLoser()) {
         // call End game function 
@@ -263,32 +298,31 @@ function placeSecondPlayerShips() {
   removeEventListenersFirstBoard(handlePlaceShipFirstPlayer, handleChangeAxisFirstBoard, handleRandomizeFirstBoard);
   // Render First board
   renderFirstBoard(firstPlayer);
-  // Hide first board from the second player
+  // Hide first board from the second player if 2 players mode
+  if (!isComputerMode) {
+    hideFirstBoard();
+  }
+  // Second player turn to place Ships
+  renderBanner(`${secondPlayer.name}'s turn to place ships`);
   setTimeout( () => {
-    // Second player turn to place Ships
-    renderBanner(`${secondPlayer.name}'s turn to place ships`);
     if (isComputerMode) { // Computer mode
       placeComputerShips();
     }
     else { // 2 players mode
-      // Hide first board
-      hideFirstBoard();
       // Event listener for second board
       addEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxisSecondBoard, handleRandomizeSecondBoard);
     }
-  }, 1000);
+  }, 2000);
 }
 function handlePlaceShip(playerObj) {
   return (event) => {
-    console.log("handle place ships triggered", playerObj)
     // If all ships are already placed return
     if (finishedPlacingShips) {
       return;
     }
-    console.log("handle place ships triggered passed if condition")
     // Get the clicked cell and get its coordinates
     const curCell = event.target;
-    const [x, y] = getCellCoordinates(curCell);
+    const [x, y] = getCellCoords(curCell);
     // Place the ship in the clicked cell
     const isShipPlaced = playerObj.placeShip(x, y) 
     if (isShipPlaced) {
@@ -353,12 +387,20 @@ function placeComputerShips() {
   continueGameAfterShipsPlacement();
 }
 function computerAttack() {
-  // Get random coordinates
-  const x = Math.floor(Math.random() * GAME_BOARD_SIZE);
-  const y = Math.floor(Math.random() * GAME_BOARD_SIZE);
+  // If last attack was a hit, attack neighbor cells
+  let x = null;
+  let y = null;
+  // If there are coordinates in hitCellNeighborCoordsQueue use them
+  const hitNeighborCoords = getHitCellNeighborCoords();
+  if (hitNeighborCoords !== null) {
+    [x, y] = hitNeighborCoords;
+  }
+  else { // Else get random coordinates
+    [x, y] = getRandomCoords();
+  }
   // Attack first player
   const isHit = firstPlayer.receiveAttack(x, y);
-  console.log("Computer is attacking at: ", x, y, " | isHit: ", isHit);
+  console.log("Bot is attacking at: ", x, y);
   // Render first player board after being attacked
   renderFirstBoard(firstPlayer);
   if (isHit) { // Hit case
@@ -366,7 +408,9 @@ function computerAttack() {
     if (firstPlayer.isLoser()) {
       // Call End game function 
       endGame(secondPlayer.name);
+      return;
     }
+    updateHitCellNeighborCoordsQueue(x, y);
     // Make computer attack again
     switchPlayerTurn(secondPlayer.name);
   }

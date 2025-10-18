@@ -155,12 +155,13 @@ const changeSideShipsAxisSecond = changeSideShipsAxis(shipsContainerSecond);
 
 // ## Game board functions
 function renderBoard(boardElem) {
+  const GAME_BOARD_SIZE = 10;
   return (playerObj) => {
     const gamebaord = playerObj.getBoard();
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < GAME_BOARD_SIZE; i++) {
+      for (let j = 0; j < GAME_BOARD_SIZE; j++) {
         // Calculate cell index
-        const cellIndex = i * 10 + j;
+        const cellIndex = i * GAME_BOARD_SIZE + j;
         if (gamebaord[i][j] === 'X') { // Ship cell
           editCellType(boardElem, cellIndex, 'ship');
         }
@@ -211,8 +212,13 @@ function hideShipPlacementBtns() {
 }
 
 // # Board cell functions
-function replaceCellClass(cell, currentClass, newClass) {
-  cell.classList.replace(currentClass, newClass);
+function getCellFromCoordsFirstBoard(x, y) {
+  const GAME_BOARD_SIZE = 10;
+  // Calculate index from coords
+  const cellIndex = x * GAME_BOARD_SIZE + y;
+  // Get cell from board.children
+  const cell = firstBoardElem.children[cellIndex];
+  return cell;
 }
 
 export {
@@ -237,5 +243,5 @@ export {
   showSecondBoard,
   renderBoardsBanner,
   hideShipPlacementBtns,
-  replaceCellClass,
+  getCellFromCoordsFirstBoard,
 };
