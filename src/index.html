@@ -8,27 +8,40 @@
 </head>
 
 <body>
-  <h1>Battleship</h1>
-  <h3 class="banner"></h3>
+  <h1>BATTLESHIP</h1>
+  <div class="banner"></div>
 
   <!-- Game Mode Screen -->
-  <div class="game-mode-btns"> 
-    <button class="game-mode-btn computer-mode-btn">Computer Mode</button>
-    <button class="game-mode-btn players-mode-btn">2-Player Mode</button>
+  <div class="game-mode-screen">
+    <button class="game-mode-btn computer-mode-btn">
+      <svg viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+      </svg>
+      <div class="game-mode-btn-text">Computer Mode</div>
+    </button>
+    <button class="game-mode-btn players-mode-btn">
+      <svg viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+      </svg>
+      <div class="game-mode-btn-text">2-Player Mode</div>
+    </button>
   </div>
 
   <!-- Player Names Form Screen -->
   <form action="" method="post" class="player-names-form hidden-elem">
-    <div class="first-player-name-input">
-      <label for="fname">First Player name:</label>
-      <input type="text" id="fname" name="fname" required>
+    <div>Enter Player Names</div>  
+    <div class="form-input-container">
+      <label for="fname">First Player Name</label>
+      <input type="text" id="fname" name="fname" placeholder="Enter your name" required>
     </div>
 
-    <div class="second-player-name-input">
-      <label for="sname">Second Player name:</label>
-      <input type="text" id="sname" name="sname" required>
+    <div class="form-input-container second-player-name-input">
+      <label for="sname">Second Player Name</label>
+      <input type="text" id="sname" name="sname" placeholder="Enter your name" required>
     </div>
-    <button type="submit">Enter</button>
+    <button type="submit">Start Game</button>
   </form>
 
   <!-- Game Screen (game boards) -->

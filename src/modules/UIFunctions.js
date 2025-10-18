@@ -12,9 +12,9 @@ import {
 
 // DOM elements 
 const bannerElem = document.querySelector(".banner");
-const shipPlacementBtns = document.querySelectorAll(".ship-placement-btns");
+const shipPlacementBtns = document.querySelectorAll(".ship-placement-btn");
 // Screens
-const gameModeScreen = document.querySelector(".game-mode-btns");
+const gameModeScreen = document.querySelector(".game-mode-screen");
 const gameScreen = document.querySelector(".game-screen");
 // Player Names form
 const playerNamesForm = document.querySelector(".player-names-form");
@@ -71,7 +71,7 @@ function renderGameModeScreen() {
   hideElem(gameScreen);
   hideElem(playerNamesForm);
   // Show game mode screen
-  renderBanner('Choose Game Mode');
+  renderBanner('Select Game Mode');
   showElem(gameModeScreen);
 }
 function renderGameScreen(isComputerMode) {
@@ -114,7 +114,7 @@ function renderPlayerNamesFormScreen(isComputerMode) {
   hideElem(gameModeScreen);
   hideElem(gameScreen);
   // Show player names form screen
-  renderBanner('Enter Player(s) Name');
+  renderBanner('');
   showElem(playerNamesForm);
 }
 function getFirstPlayerName() {
@@ -202,8 +202,10 @@ const showFirstBoard = showBoard(firstBoardElem);
 const showSecondBoard = showBoard(secondBoardElem);
 
 function renderBoardsBanner(firstPlayerName, secondPlayerName) {
-  firstBoardBanner.textContent = firstPlayerName + "'s board";
-  secondBoardBanner.textContent = secondPlayerName + "'s board";
+  const firstText = firstPlayerName + "'s board";
+  firstBoardBanner.textContent = firstText.toUpperCase();
+  const secondText = secondPlayerName + "'s board";
+  secondBoardBanner.textContent = secondText.toUpperCase();
 }
 
 // ## Ship placement buttons functions

@@ -57,13 +57,164 @@ h1, h2, h3, h4, h5, h6 {
   isolation: isolate;
 }
 /************************************************************/
+/* Custom variables */
+:root{
+  /* Colors - Semantic */
+  --color-bg: #EEF3F9;
+  --color-surface: #FFFFFF;
+  --color-text: #111827;
+  --color-text-muted: #717182;
+  
+  /* Colors - Inputs */
+  --color-input-bg: #F3F4F6;
+  --color-input-border: #E5E7EB;
+  --color-input-border-focus: #C8CDD4;
+  
+  /* Colors - Blue scale */
+  --color-blue-600: #2563EB;
+  --color-blue-500: #388AF6;
+  --color-blue-400: #3B82F6;
+  
+  /* Colors - Emerald scale */
+  --color-emerald-600: #149E78;
+  --color-emerald-500: #27B887;
+  --color-emerald-400: #22AB7D;
+  --color-emerald-300: #31D49E;
+  
+  /* Border radius */
+  --radius-md: 0.6rem;
+  
+  /* Spacing */
+  --space-form-gap: 1.2rem;
+  --space-section: 3rem;
+  
+  /* Shadows */
+  --shadow-card: 0 12px 24px rgba(15, 23, 42, 0.08),
+                 0 2px 6px rgba(15, 23, 42, 0.06);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(90deg, var(--color-blue-600) 0%, var(--color-emerald-400) 100%);
+  --gradient-primary-hover: linear-gradient(90deg, var(--color-blue-400) 0%, var(--color-emerald-300) 100%);
+}
+/************************************************************/
 /* General Styles */
 body {
   text-align: center;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  background-color: var(--color-bg);
 }
 
 .hidden-elem {
   display: none !important;
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 500;
+  letter-spacing: 0.3rem;
+  margin: var(--space-section);
+  margin-top: 2rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+.banner {
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+}
+
+/************************************************************/
+/* Game Mode Screen */
+.game-mode-screen {
+  margin-top: var(--space-section);
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+.game-mode-btn {
+  color: var(--color-surface);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 2rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+/* Game mode buttons icons */
+.game-mode-btn svg { 
+  fill: none; 
+  stroke: currentColor; 
+  width: 5rem; 
+  height: auto; 
+}
+.game-mode-btn-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.computer-mode-btn {
+  background-color: var(--color-blue-600);
+}
+.computer-mode-btn:hover {
+  background-color: var(--color-blue-500);
+}
+.players-mode-btn {
+  background-color: var(--color-emerald-600);
+}
+.players-mode-btn:hover {
+  background-color: var(--color-emerald-500);
+}
+/************************************************************/
+/* Player names form screen */
+.player-names-form {
+  background-color: var(--color-surface);
+  width: fit-content;
+  margin: 0 auto;
+  margin-top: 6rem;
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-input-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-form-gap);
+}
+.form-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+.player-names-form label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.player-names-form input {
+  font-size: 0.95rem;
+  background-color: var(--color-input-bg);
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-input-border);
+  outline: none;
+}
+.player-names-form input:focus {
+  border-color: var(--color-input-border-focus);
+}
+.player-names-form button {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-surface);
+  background-image: var(--gradient-primary);
+  padding: 0.5rem 5rem;
+  margin-top: var(--space-form-gap);
+  border: none;
+  border-radius: var(--radius-md);
+}
+.player-names-form button:hover {
+  background-image: var(--gradient-primary-hover);
 }
 /************************************************************/
 /* Boards styles */
