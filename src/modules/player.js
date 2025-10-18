@@ -24,10 +24,8 @@ class Player {
     this.name = name;
     this.gameboard = new Gameboard();
   }
-  receiveAttack(x, y) {
-    const isHit = this.gameboard.receiveAttack(x, y);
-    return isHit;
-  }
+  // # Functions
+  // ## Ship placement
   placeShip(x, y) {
     const isPlaced = this.gameboard.placeShip(x, y);
     return isPlaced;
@@ -44,9 +42,15 @@ class Player {
   isAllShipsPlaced() {
     return this.gameboard.isAllShipsPlaced();
   }
+  // ## Attack
+  receiveAttack(x, y) {
+    const isHit = this.gameboard.receiveAttack(x, y);
+    return isHit;
+  }
   isLoser() {
     return this.gameboard.isAllShipsSunk();
   }
+  // ## Display
   getBoard() {
     return this.gameboard.display();
   }

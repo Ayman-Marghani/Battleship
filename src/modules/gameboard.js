@@ -1,7 +1,7 @@
-import Ship from "./ship";
+import Ship from './ship';
+import {isCoordValid} from './helperFunctions';
 
 class Gameboard {
-  
   constructor() {
     this.GAME_BOARD_SIZE = 10;
     // empty cell -> null, ship cell -> ship object, hit -> true, miss -> false
@@ -13,19 +13,7 @@ class Gameboard {
     this.shipsSizes = [5, 4, 3, 3, 2]; // Array of ship sizes
     this.shipsHorizontal = Array(5).fill(true); // Array of wether a ship is horizontal or vertical (Default is horizontal)
   }
-
-  // Helper functions
-  getRandomBool() {
-    return Math.random() < 0.5;
-  }
-  isCoordValid(x, y) {
-    // Invalid coordinates (out of board)
-    if (x < 0 || x >= this.GAME_BOARD_SIZE || y < 0 || y >= this.GAME_BOARD_SIZE) {
-      return false;
-    }
-    return true;
-  }
-
+  // # Helper functions
   collision(x, y) { // Check for Collision with other ships
     // 8 neighbor cells indices
     const neighborXArr = [-1, -1, -1, 1, 1, 1, 0, 0]; 
@@ -33,7 +21,7 @@ class Gameboard {
     for (let i = 0; i < neighborXArr.length; i++) {
       const neighborX = x + neighborXArr[i];
       const neighborY = y + neighborYArr[i];
-      if (this.isCoordValid(neighborX, neighborY)) {
+      if (isCoordValid(neighborX, neighborY)) {
         if (this.testMatrix[neighborX][neighborY] === 'ship') { // If there is a ship on a neighbor cell
           return true;
         }
@@ -41,7 +29,6 @@ class Gameboard {
     }
     return false;
   }
-
   checkShipCoord(x, y) { // returns true if all ships' cells are valid and there isn't a collision with other ships
     this.shipsCords.push([x, y]);
     // Get idx, size, and isHorizontal information of current ship
@@ -50,7 +37,7 @@ class Gameboard {
     const isHorizontal = this.shipsHorizontal[idx];
     for (let i = 0; i < size; i++) {
       // Check if coordinates are valid and if there is a collision with other ships
-      if (!this.isCoordValid(x, y) || this.collision(x, y)) {
+      if (!isCoordValid(x, y) || this.collision(x, y)) {
         this.shipsCords.pop();
         return false;
       }
@@ -76,15 +63,14 @@ class Gameboard {
     }
     return true;
   } 
-
   markSunkShipNeighbors(x, y) {
     // Visited matrix
-    let visited = Array.from({length: this.GAME_BOARD_SIZE}, () => Array(this.GAME_BOARD_SIZE).fill(false)); 
-    // Neighbor indices array
+    const visited = Array.from({length: this.GAME_BOARD_SIZE}, () => Array(this.GAME_BOARD_SIZE).fill(false)); 
+    // Neighbor indices arrays
     const neighborXArr = [-1, -1, -1, 1, 1, 1, 0, 0]; 
     const neighborYArr = [-1, 0, 1, -1, 0, 1, -1, 1]; 
     // Make a coordinates queue and push x, y to it
-    let coordQueue = [];
+    const coordQueue = [];
     coordQueue.push([x, y]);
 
     while (coordQueue.length !== 0) {
@@ -95,7 +81,7 @@ class Gameboard {
         for (let i = 0; i < neighborXArr.length; i++) {
           const neighborX = curX + neighborXArr[i];
           const neighborY = curY + neighborYArr[i];
-          if (this.isCoordValid(neighborX, neighborY)) {
+          if (isCoordValid(neighborX, neighborY)) {
             // empty cell case
             if (this.gameBoardMatrix[neighborX][neighborY] === null) {
               // mark it with miss
@@ -112,7 +98,8 @@ class Gameboard {
     }
   }
 
-  // Main functions
+  // # Main functions
+  // ## Ships placement
   placeShip(x, y) {
     if (this.checkShipCoord(x, y)) {
       // Get idx, size, and isHorizontal information of current ship
@@ -136,15 +123,13 @@ class Gameboard {
     }
     return false;
   }
-
   changeAxis() {
     this.shipsHorizontal = this.shipsHorizontal.map(axis => !axis);
   }
-
   randomizeShips() {
     for (let i = 0; i < this.shipsSizes.length; i++) {
       // Random direction
-      this.shipsHorizontal[i] = this.getRandomBool();
+      this.shipsHorizontal[i] = Math.random() < 0.5; // random bool
       let isPlaced = null;
       do {
         // Generate random coordinates
@@ -154,9 +139,19 @@ class Gameboard {
       } while (!isPlaced);
     }
   }
-
+  getIsShipPlacedArr() {
+    let isPlacedArr = Array(5).fill(false);
+    for (let i = 0; i < this.shipsArr.length; i++) {
+      isPlacedArr[i] = true;
+    }
+    return isPlacedArr;
+  }
+  isAllShipsPlaced() {
+    return this.shipsArr.length === this.shipsSizes.length;
+  }
+  // ## Attack
   receiveAttack(x, y) {
-    if (!this.isCoordValid(x, y)) {
+    if (!isCoordValid(x, y)) {
       return null;
     }
     // Case 1: hit
@@ -177,19 +172,6 @@ class Gameboard {
       return false;
     }
   }
-
-  getIsShipPlacedArr() {
-    let isPlacedArr = Array(5).fill(false);
-    for (let i = 0; i < this.shipsArr.length; i++) {
-      isPlacedArr[i] = true;
-    }
-    return isPlacedArr;
-  }
-
-  isAllShipsPlaced() {
-    return this.shipsArr.length === this.shipsSizes.length;
-  }
-
   isAllShipsSunk() {
     // Call isSunk() for all ships
     for (const ship of this.shipsArr) {
@@ -199,7 +181,7 @@ class Gameboard {
     }
     return true;
   }
-  
+  // ## Display
   display() {
     return this.gameBoardMatrix.map((row) => {
       return row.map((item) => {
