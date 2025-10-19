@@ -185,16 +185,16 @@ function continueGameAfterShipsPlacement() {
     hideSecondBoard();
     showFirstBoard();
     // Display current player turn
-    renderBanner(`${curPlayer}'s turn`);
+    renderBanner(`${curPlayer}'s turn - Attack!`);
     // Add Attack event listeners for each board
     addEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
-  }, 1500);
+  }, 1000);
 }
 function switchPlayerTurn(nextPlayerName) {
   // change curPlayer global variable
   curPlayer = nextPlayerName;
   // render player turn banner
-  renderBanner(`${curPlayer}'s turn`);
+  renderBanner(`${curPlayer}'s turn - Attack!`);
   if (curPlayer === firstPlayer.name) { // First player case
     // show first player board
     showFirstBoard(); 
@@ -226,7 +226,6 @@ function endGame(winningPlayerName) {
   removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
 }
 function moveToPlayerNamesFormScreen(isComputerMode) {
-  console.log("moveToPlayerNamesFormScreen: ", isComputerMode);
   removeEventListenerGameModeBtns(handleGameModeClick);
   renderPlayerNamesFormScreen(isComputerMode);
   addEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
@@ -284,9 +283,10 @@ function handlePlayerAttack(attacker, attackedPlayer) {
         // Switch to next player
         switchPlayerTurn(attackedPlayer.name);
       }
-      // check if game ended
+      console.log("Checking end game status:", attackedPlayer.isLoser());
+      // Check if game ended
       if (attackedPlayer.isLoser()) {
-        // call End game function 
+        // Call End game function 
         endGame(attacker.name);
       }
     }
@@ -297,7 +297,7 @@ function handlePlayerAttack(attacker, attackedPlayer) {
 function placeFirstPlayerShips() {
   // First player turn to place Ships
   renderBanner(`${firstPlayer.name}'s turn to place ships`);
-  // Todo: show first board ship placement buttons
+  // Show first board ship placement buttons
   showFirstShipPlacementBtns();
   // Event listener for first board
   addEventListenersFirstBoard(handlePlaceShipFirstPlayer, handleChangeAxisFirstBoard, handleRandomizeFirstBoard);
@@ -307,27 +307,24 @@ function placeSecondPlayerShips() {
   removeEventListenersFirstBoard(handlePlaceShipFirstPlayer, handleChangeAxisFirstBoard, handleRandomizeFirstBoard);
   // Render First board
   renderFirstBoard(firstPlayer);
-  // Hide first board from the second player if 2 players mode
-  if (!isComputerMode) {
-    hideFirstBoard();
-  }
-  // Second player turn to place Ships
-  renderBanner(`${secondPlayer.name}'s turn to place ships`);
-  // TODO: hide first board ship placement
-  hideFirstShipPlacementBtns();
-  // TODO: show second board ship placement buttons if 2 players mode
-  if (!isComputerMode) {
-    showSecondShipPlacementBtns();
-  }
+
   setTimeout( () => {
+    // Second player turn to place Ships
+    renderBanner(`${secondPlayer.name}'s turn to place ships`);
+    // Hide first board ship placement
+    hideFirstShipPlacementBtns();
     if (isComputerMode) { // Computer mode
       placeComputerShips();
     }
     else { // 2 players mode
+      // Hide first board from the second player
+      hideFirstBoard();
+      // Show second board ship placement buttons
+      showSecondShipPlacementBtns();
       // Event listener for second board
       addEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxisSecondBoard, handleRandomizeSecondBoard);
     }
-  }, 2000);
+  }, 1000);
 }
 function handlePlaceShip(playerObj) {
   return (event) => {

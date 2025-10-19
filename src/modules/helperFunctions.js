@@ -82,7 +82,6 @@ function addSideShipsToDOM(shipsContainerElem) {
     shipsContainerElem.appendChild(shipBox);
   }
 }
-
 function showSideShips(shipsContainerElem) {
   if (shipsContainerElem) {
     for (const shipElem of shipsContainerElem.children) {

@@ -6,42 +6,35 @@
 *, *::before, *::after {
   box-sizing: border-box;
 }
-
 /* 2. Remove default margin */
 * {
   margin: 0;
 }
-
 /* 3. Enable keyword animations */
 @media (prefers-reduced-motion: no-preference) {
   html {
     interpolate-size: allow-keywords;
   }
 }
-
 body {
   /* 4. Add accessible line-height */
   line-height: 1.5;
   /* 5. Improve text rendering */
   -webkit-font-smoothing: antialiased;
 }
-
 /* 6. Improve media defaults */
 img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
 }
-
 /* 7. Inherit fonts for form controls */
 input, button, textarea, select {
   font: inherit;
 }
-
 /* 8. Avoid text overflows */
 p, h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
-
 /* 9. Improve line wrapping */
 p {
   text-wrap: pretty;
@@ -49,7 +42,6 @@ p {
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
-
 /*
   10. Create a root stacking context
 */
@@ -113,11 +105,9 @@ body {
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   background-color: var(--color-bg);
 }
-
 .hidden-elem {
   display: none !important;
 }
-
 h1 {
   font-size: 3.5rem;
   font-weight: var(--font-bold);
@@ -125,16 +115,13 @@ h1 {
   margin: var(--space-section);
   margin-top: 2rem;
 }
-
 button {
   cursor: pointer;
 }
-
 .banner {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: var(--color-text-muted);
 }
-
 /************************************************************/
 /* Game Mode Screen */
 .game-mode-screen {
@@ -213,6 +200,7 @@ button {
 .player-names-form input:focus {
   border-color: var(--color-input-border-focus);
 }
+/* Start Game button */
 .player-names-form button,
 .play-again-btn {
   font-size: 1.1rem;
@@ -228,6 +216,12 @@ button {
 .play-again-btn:hover {
   background-image: var(--gradient-primary-hover);
 }
+/* Play Again button */
+.play-again-btn {
+  padding: 0.5rem 2rem;
+  margin: 0 auto;
+  margin-top: 2rem;
+}
 /************************************************************/
 /* Game Screen */
 .game-screen {
@@ -241,12 +235,12 @@ button {
   justify-content: center;
   gap: var(--space-section);
 }
-
 .board-subcontainer {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+/* Boards title */
 .board-title {
   font-size: 1.1rem;
   font-weight: var(--font-bold);
@@ -257,7 +251,16 @@ button {
 .second-board-title {
   color: var(--color-emerald-600);
 }
-
+/* TODO: Board */
+.board {
+  display: grid;
+  grid-template-columns: repeat(10, 2rem);
+  width: fit-content;
+  background-color: #1E293B;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+/* Ship placement buttons */
 .first-ship-placement-btns,
 .second-ship-placement-btns {
   display: flex;
@@ -283,41 +286,34 @@ button {
 .second-ship-placement-btns button:hover {
   background-color: var(--color-emerald-500);
 }
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(10, 2rem);
-  border-left: 1px solid black;
-  border-top: 1px solid black;
-  width: fit-content;
-}
 /************************************************************/
 /* Board cell styles */
 .cell {
   height: 2rem;
   width: 2rem;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
+  border: 1px solid #2D4A6D;
 }
 
-.ship {
-  background-color: aqua;
+.cell:hover,
+.cell.empty:hover,
+.cell.hidden-cell:hover {
+  background-color: var(--color-emerald-600);
 }
-
-.empty {
-  background-color: white;
+/* Cell cases */
+.cell.ship {
+  background-color: var(--color-blue-600);
 }
-
-.cell.hidden {
-  background-color: white;
+.empty,
+.cell.hidden-cell {
+  background-color: #1E293B;
 }
-
-.cell.hit {
-  background-color: red;
+.cell.hit,
+.cell.hidden-cell.hit {
+  background-color: #dc2626;
 }
-
-.cell.miss {
-  background-color: gray;
+.cell.miss,
+.cell.hidden-cell.miss {
+  background-color: #64748b;
 }
 /************************************************************/
 /* Fleet */
@@ -325,9 +321,6 @@ button {
   background-color: #1E293B;
   border-radius: var(--radius-md);
   color: #fff;
-  /* display: flex;
-  flex-direction: column;
-  gap: 1rem; */
   padding: 1rem;
 }
 .fleet-title {
@@ -340,26 +333,23 @@ button {
   flex-direction: column;
   gap: 0.5rem;
 }
-
+/* Ship Card */
 .ship-box {
   border-radius: 0.2rem;
   padding: 0.75rem;
 }
-
 .ship-info {
   display: flex;
   justify-content: space-between;
   gap: 2rem;
   margin-bottom: 0.5rem;
 }
-
 .ship-title {
   font-size: 0.9rem;
   font-weight: var(--font-bold);
 }
 .ship-size {
   font-size: 0.75rem;
-  /* color: var(--color-text-muted); */
 }
 .ship-elem {
   display: flex;
@@ -367,7 +357,6 @@ button {
   width: fit-content;
   height: fit-content;
 }
-
 .side-ship-cell {
   height: 1rem;
   width: 1rem;
@@ -377,7 +366,7 @@ button {
   font-size: 2rem;
   height: 2.5rem;
 }
-/* First board colors */
+/* First board */
 .first-fleet .ship-box {
   border: 2px solid var(--color-blue-600);
   background-color:  #1E40AF;
@@ -385,7 +374,7 @@ button {
 .first-fleet .side-ship-cell {
   background-color: var(--color-blue-600);
 }
-/* Second board colors */
+/* Second board */
 .second-fleet .ship-box {
   border: 2px solid var(--color-emerald-600);
   background-color:  #047857;
@@ -393,7 +382,7 @@ button {
 .second-fleet .side-ship-cell {
   background-color: var(--color-emerald-600);
 }
-/* Placed ship styles*/
+/* Placed ship card styles */
 .ship-box.placed {
   background-color: #334155;
   border: 2px solid transparent;
@@ -407,38 +396,18 @@ button {
 .placed .side-ship-cell {
   background-color: #475569;
 }
-
 /************************************************/
-
-/* Hide a ship */
-.ship-elem.hidden-ship {
-  border: none;
-}
-
-.ship-elem.hidden-ship .cell {
-  background-color: white;
-  border: none;
-}
-
 /* Footer */
 footer {
   font-size: 0.95rem;
   color: var(--color-text-muted);
   margin: auto auto 1rem auto;
 }
-
 footer a {
   color: var(--color-blue-600);
   text-decoration: none;
 }
-
 footer a:hover {
   color: var(--color-blue-500);
   text-decoration: underline;
-}
-
-.play-again-btn {
-  padding: 0.5rem 2rem;
-  margin: 0 auto;
-  margin-top: 2rem;
 }

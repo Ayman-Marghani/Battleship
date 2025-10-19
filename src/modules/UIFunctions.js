@@ -121,12 +121,14 @@ function renderSideShips(shipsContainerElem) {
   return (shipsPlacedArr) => {
     for (let i = 0; i < shipsPlacedArr.length; i++) {
       const shipElem = shipsContainerElem.children[i];
-      // If ship is placed on board hide it from the side
-      if (shipsPlacedArr[i]) {
-        shipElem.classList.add('placed');
-      }
-      else {
-        shipElem.classList.remove('placed');
+      if (shipElem) {
+        // If ship is placed on board hide it from the side
+        if (shipsPlacedArr[i]) {
+          shipElem.classList.add('placed');
+        }
+        else {
+          shipElem.classList.remove('placed');
+        }
       }
     }
   };
@@ -180,7 +182,7 @@ const renderSecondBoard = renderBoard(secondBoardElem);
 function hideBoard(boardElem) {
   return () => {
     for (const cell of boardElem.children) {
-      cell.classList.add('hidden');
+      cell.classList.add('hidden-cell');
     }
   };
 }
@@ -190,7 +192,7 @@ const hideSecondBoard = hideBoard(secondBoardElem);
 function showBoard(boardElem) {
   return () => {
     for (const cell of boardElem.children) {
-      cell.classList.remove('hidden');
+      cell.classList.remove('hidden-cell');
     }
   };
 }
@@ -206,22 +208,15 @@ function renderBoardsBanner(firstPlayerName, secondPlayerName) {
 
 // ## Ship placement buttons functions
 function showFirstShipPlacementBtns() {
-  console.log(" showFirstShipPlacementBtns: ", firstShipPlacementBtns);
   firstShipPlacementBtns.forEach(showElem);
 }
 function showSecondShipPlacementBtns() {
-  console.log(" showSecondShipPlacementBtns: ", secondShipPlacementBtns);
-
   secondShipPlacementBtns.forEach(showElem);
 }
 function hideFirstShipPlacementBtns() {
-  console.log(" hideFirstShipPlacementBtns: ", firstShipPlacementBtns);
-
   firstShipPlacementBtns.forEach(hideElem);
 }
 function hideSecondShipPlacementBtns() {
-  console.log(" hideSecondShipPlacementBtns: ", secondShipPlacementBtns);
-
   secondShipPlacementBtns.forEach(hideElem);
 }
 
