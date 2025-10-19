@@ -3,7 +3,6 @@ import {
   removeChildren,
   hideElem,
   showElem,
-  changeFlexDirection,
   renderEmptyBoard,
   addSideShipsToDOM,
   showSideShips,
@@ -12,7 +11,6 @@ import {
 
 // DOM elements 
 const bannerElem = document.querySelector(".banner");
-const shipPlacementBtns = document.querySelectorAll(".ship-placement-btn");
 // Screens
 const gameModeScreen = document.querySelector(".game-mode-screen");
 const gameScreen = document.querySelector(".game-screen");
@@ -25,10 +23,12 @@ const secondNameContainer = document.querySelector(".second-player-name-input");
 const shipsContainerFirst = document.querySelector(".first-side-ships");
 const firstBoardElem = document.querySelector(".first-board");
 const firstBoardBanner = document.querySelector(".first-board-title");
+const firstShipPlacementBtns = document.querySelectorAll(".first-ship-placement-btns button");     
 // Second board 
 const shipsContainerSecond = document.querySelector(".second-side-ships");
 const secondBoardElem = document.querySelector(".second-board");
 const secondBoardBanner = document.querySelector(".second-board-title");
+const secondShipPlacementBtns  = document.querySelectorAll(".second-ship-placement-btns button");
 // Play again button
 const playAgainBtn = document.querySelector(".play-again-btn");
 
@@ -52,13 +52,15 @@ function resetDOM() {
   // Reset player names form input values
   firstNameInput.value = '';
   secondNameInput.value = '';
-  // Render boards and ship placement buttons
+  // Render boards
   renderEmptyBoard(firstBoardElem);
   renderEmptyBoard(secondBoardElem);
-  shipPlacementBtns.forEach(showElem);
   // Render ships on the side of boards
   showSideShips(shipsContainerFirst);
   showSideShips(shipsContainerSecond);
+  // Reset ships direction to vertical
+  shipsContainerFirst.nextElementSibling.textContent = '→';
+  shipsContainerSecond.nextElementSibling.textContent = '→';
   // Hide play again button
   hideElem(playAgainBtn);
   // Hide all screens
@@ -80,19 +82,9 @@ function renderGameScreen(isComputerMode) {
   hideElem(playerNamesForm);
   // Show game screen and ship placement buttons
   showElem(gameScreen);
-  // Separate first player buttons from second player buttons
-  const btnsArr = Array.from(shipPlacementBtns); 
-  const firstPlayerShipPlacementBtns = btnsArr.slice(0, 2);      
-  const secondPlayerShipPlacementBtns  = btnsArr.slice(-2); 
-  // Show first player buttons 
-  firstPlayerShipPlacementBtns.forEach(showElem);
-  // If computer mode hide second player buttons, else show them
-  if (isComputerMode) {
-    secondPlayerShipPlacementBtns.forEach(hideElem);
-  }
-  else {
-    secondPlayerShipPlacementBtns.forEach(showElem);
-  }
+  // Show first player ship placement buttons and hide second player buttons
+  showFirstShipPlacementBtns();
+  hideSecondShipPlacementBtns();
 }
 function showPlayAgainBtn() {
   showElem(playAgainBtn);
@@ -131,10 +123,10 @@ function renderSideShips(shipsContainerElem) {
       const shipElem = shipsContainerElem.children[i];
       // If ship is placed on board hide it from the side
       if (shipsPlacedArr[i]) {
-        hideElem(shipElem);
+        shipElem.classList.add('placed');
       }
       else {
-        showElem(shipElem);
+        shipElem.classList.remove('placed');
       }
     }
   };
@@ -142,16 +134,20 @@ function renderSideShips(shipsContainerElem) {
 const renderSideShipsFirst = renderSideShips(shipsContainerFirst);
 const renderSideShipsSecond = renderSideShips(shipsContainerSecond);
 
-function changeSideShipsAxis(shipsContainerElem) {
-  return () => {
-    changeFlexDirection(shipsContainerElem);
-    for (const ship of shipsContainerElem.children) {
-      changeFlexDirection(ship);
-    }
-  };
+function changeSideShipsAxisFirst() {
+  // Get next elem to shipsContainerFirst
+  const directionElem = shipsContainerFirst.nextElementSibling;
+  // Change text content of ship-direction
+  const curDirection = directionElem.textContent;
+  directionElem.textContent = curDirection === '→' ? '↓' : '→'; 
 }
-const changeSideShipsAxisFirst = changeSideShipsAxis(shipsContainerFirst);
-const changeSideShipsAxisSecond = changeSideShipsAxis(shipsContainerSecond);
+function changeSideShipsAxisSecond() {
+  // Get next elem to shipsContainerFirst
+  const directionElem = shipsContainerSecond.nextElementSibling;
+  // Change text content of ship-direction
+  const curDirection = directionElem.textContent;
+  directionElem.textContent = curDirection === '→' ? '↓' : '→'; 
+}
 
 // ## Game board functions
 function renderBoard(boardElem) {
@@ -209,8 +205,24 @@ function renderBoardsBanner(firstPlayerName, secondPlayerName) {
 }
 
 // ## Ship placement buttons functions
-function hideShipPlacementBtns() {
-  shipPlacementBtns.forEach(hideElem);
+function showFirstShipPlacementBtns() {
+  console.log(" showFirstShipPlacementBtns: ", firstShipPlacementBtns);
+  firstShipPlacementBtns.forEach(showElem);
+}
+function showSecondShipPlacementBtns() {
+  console.log(" showSecondShipPlacementBtns: ", secondShipPlacementBtns);
+
+  secondShipPlacementBtns.forEach(showElem);
+}
+function hideFirstShipPlacementBtns() {
+  console.log(" hideFirstShipPlacementBtns: ", firstShipPlacementBtns);
+
+  firstShipPlacementBtns.forEach(hideElem);
+}
+function hideSecondShipPlacementBtns() {
+  console.log(" hideSecondShipPlacementBtns: ", secondShipPlacementBtns);
+
+  secondShipPlacementBtns.forEach(hideElem);
 }
 
 // # Board cell functions
@@ -244,6 +256,9 @@ export {
   showFirstBoard,
   showSecondBoard,
   renderBoardsBanner,
-  hideShipPlacementBtns,
+  showFirstShipPlacementBtns,
+  showSecondShipPlacementBtns,
+  hideFirstShipPlacementBtns,
+  hideSecondShipPlacementBtns,
   getCellFromCoordsFirstBoard,
 };

@@ -13,17 +13,21 @@
 
   <!-- Game Mode Screen -->
   <div class="game-mode-screen">
+    <!-- Computer mode button -->
     <button class="game-mode-btn computer-mode-btn">
       <svg viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+        </path>
       </svg>
       <div class="game-mode-btn-text">Computer Mode</div>
     </button>
+    <!-- 2 players mode button -->
     <button class="game-mode-btn players-mode-btn">
       <svg viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+        </path>
       </svg>
       <div class="game-mode-btn-text">2-Player Mode</div>
     </button>
@@ -31,12 +35,13 @@
 
   <!-- Player Names Form Screen -->
   <form action="" method="post" class="player-names-form hidden-elem">
-    <div>Enter Player Names</div>  
+    <div>Enter Player Names</div>
+    <!-- First player input container -->
     <div class="form-input-container">
       <label for="fname">First Player Name</label>
       <input type="text" id="fname" name="fname" placeholder="Enter your name" required>
     </div>
-
+    <!-- Second player input container -->
     <div class="form-input-container second-player-name-input">
       <label for="sname">Second Player Name</label>
       <input type="text" id="sname" name="sname" placeholder="Enter your name" required>
@@ -46,35 +51,43 @@
 
   <!-- Game Screen (game boards) -->
   <div class="game-screen hidden-elem">
-    <div class="board-container">
-      <div class="side-ships-container first-side-ships"></div>
-
-      <div>
+    <div class="boards-container">
+      <div class="fleet-panel first-fleet">
+        <div class="fleet-title">FLEET</div>
+        <div class="side-ships-container first-side-ships"></div>
+        <div class="ship-direction"></div>
+      </div>
+      <!-- First Board -->
+      <div class="board-subcontainer">
+        <div class="board-title first-board-title"></div>
         <div class="first-board board"></div>
-        <div class="board-title first-board-title">player 1 board</div>
-        <button class="change-axis-first-btn ship-placement-btns">Change Axis</button>
-        <button class="randomize-first-btn ship-placement-btns">Randomize</button>
+        <div class="first-ship-placement-btns">
+          <button class="change-axis-first-btn ship-placement-btn">Change Axis</button>
+          <button class="randomize-first-btn ship-placement-btn">Randomize</button>
+        </div>
       </div>
-    </div>
-
-    <div class="board-container">
-      <div>
+      <!-- Second Board -->
+      <div class="board-subcontainer">
+        <div class="board-title second-board-title"></div>
         <div class="second-board board"></div>
-        <div class="board-title second-board-title">player 2 board</div>
-        <button class="change-axis-second-btn ship-placement-btns">Change Axis</button>
-        <button class="randomize-second-btn ship-placement-btns">Randomize</button>
+        <div class="second-ship-placement-btns">
+          <button class="change-axis-second-btn ship-placement-btn">Change Axis</button>
+          <button class="randomize-second-btn ship-placement-btn">Randomize</button>
+        </div>
       </div>
-
-      <div class="side-ships-container second-side-ships"></div>
+      <!-- Second Fleet -->
+      <div class="fleet-panel second-fleet">
+        <div class="fleet-title">FLEET</div>
+        <div class="side-ships-container second-side-ships"></div>
+        <div class="ship-direction"></div>
+      </div>
     </div>
+    <!-- Play again button -->
+    <button class="play-again-btn">Play Again!</button>
+    <!-- Footer -->
+    <!-- TODO: Put GitHub icon -->
+    <footer>Made by <a href="https://github.com/Ayman-Marghani">Ayman Marghani</a></footer>
   </div>
-
-  <!-- Play again button -->
-  <button class="play-again-btn hidden-elem">Play Again!</button>
-
-  <!-- Footer -->
-   <!-- TODO: Put GitHub icon -->
-  <footer>Made by <a href="https://github.com/Ayman-Marghani">Ayman Marghani</a></footer>
 </body>
 
 </html>

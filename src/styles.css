@@ -80,6 +80,16 @@ h1, h2, h3, h4, h5, h6 {
   --color-emerald-500: #27B887;
   --color-emerald-400: #22AB7D;
   --color-emerald-300: #31D49E;
+
+  /* Font Sizes */
+  /* 
+  --font-: 0.95rem;
+  1.1rem;
+  1.2rem;
+  */
+  /* Font-weights */
+  --font-bold: 500;
+  /* --font-bolder: 700; */
   
   /* Border radius */
   --radius-md: 0.6rem;
@@ -110,7 +120,7 @@ body {
 
 h1 {
   font-size: 3.5rem;
-  font-weight: 500;
+  font-weight: var(--font-bold);
   letter-spacing: 0.3rem;
   margin: var(--space-section);
   margin-top: 2rem;
@@ -152,7 +162,7 @@ button {
 }
 .game-mode-btn-text {
   font-size: 1.2rem;
-  font-weight: 500;
+  font-weight: var(--font-bold);
 }
 .computer-mode-btn {
   background-color: var(--color-blue-600);
@@ -189,7 +199,7 @@ button {
 .player-names-form label {
   display: block;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: var(--font-bold);
 }
 .player-names-form input {
   font-size: 0.95rem;
@@ -203,7 +213,8 @@ button {
 .player-names-form input:focus {
   border-color: var(--color-input-border-focus);
 }
-.player-names-form button {
+.player-names-form button,
+.play-again-btn {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--color-surface);
@@ -213,20 +224,64 @@ button {
   border: none;
   border-radius: var(--radius-md);
 }
-.player-names-form button:hover {
+.player-names-form button:hover,
+.play-again-btn:hover {
   background-image: var(--gradient-primary-hover);
 }
 /************************************************************/
-/* Boards styles */
+/* Game Screen */
 .game-screen {
+  margin-top: 2rem;
+  min-height:75vh;
+  display: flex;
+  flex-direction: column;
+}
+.boards-container {
   display: flex;
   justify-content: center;
-  gap: 6rem;
+  gap: var(--space-section);
 }
 
-.board-container {
+.board-subcontainer {
   display: flex;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+.board-title {
+  font-size: 1.1rem;
+  font-weight: var(--font-bold);
+}
+.first-board-title {
+  color: var(--color-blue-600);
+}
+.second-board-title {
+  color: var(--color-emerald-600);
+}
+
+.first-ship-placement-btns,
+.second-ship-placement-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+.ship-placement-btn {
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-surface);
+  padding: 0.5rem 1rem;
+  font-weight: var(--font-bold);
+}
+.first-ship-placement-btns button {
+  background-color: var(--color-blue-600);
+}
+.first-ship-placement-btns button:hover {
+  background-color: var(--color-blue-500);
+}
+.second-ship-placement-btns button {
+  background-color: var(--color-emerald-600);
+}
+.second-ship-placement-btns button:hover {
+  background-color: var(--color-emerald-500);
 }
 
 .board {
@@ -265,19 +320,95 @@ button {
   background-color: gray;
 }
 /************************************************************/
-/* Side ships */
+/* Fleet */
+.fleet-panel {
+  background-color: #1E293B;
+  border-radius: var(--radius-md);
+  color: #fff;
+  /* display: flex;
+  flex-direction: column;
+  gap: 1rem; */
+  padding: 1rem;
+}
+.fleet-title {
+  font-size: 0.95rem;
+  font-weight: var(--font-bold);
+  margin-bottom: 1rem;
+}
 .side-ships-container {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
+.ship-box {
+  border-radius: 0.2rem;
+  padding: 0.75rem;
+}
+
+.ship-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.ship-title {
+  font-size: 0.9rem;
+  font-weight: var(--font-bold);
+}
+.ship-size {
+  font-size: 0.75rem;
+  /* color: var(--color-text-muted); */
+}
 .ship-elem {
   display: flex;
-  border-left: 1px solid black;
-  border-top: 1px solid black;
+  gap: 0.3rem;
   width: fit-content;
   height: fit-content;
 }
+
+.side-ship-cell {
+  height: 1rem;
+  width: 1rem;
+  border-radius: 0.2rem;
+}
+.ship-direction {
+  font-size: 2rem;
+  height: 2.5rem;
+}
+/* First board colors */
+.first-fleet .ship-box {
+  border: 2px solid var(--color-blue-600);
+  background-color:  #1E40AF;
+}
+.first-fleet .side-ship-cell {
+  background-color: var(--color-blue-600);
+}
+/* Second board colors */
+.second-fleet .ship-box {
+  border: 2px solid var(--color-emerald-600);
+  background-color:  #047857;
+}
+.second-fleet .side-ship-cell {
+  background-color: var(--color-emerald-600);
+}
+/* Placed ship styles*/
+.ship-box.placed {
+  background-color: #334155;
+  border: 2px solid transparent;
+}
+.placed .ship-title {
+  color: #64748B;
+}
+.placed .ship-size {
+  color: #64748B;
+}
+.placed .side-ship-cell {
+  background-color: #475569;
+}
+
+/************************************************/
 
 /* Hide a ship */
 .ship-elem.hidden-ship {
@@ -287,4 +418,27 @@ button {
 .ship-elem.hidden-ship .cell {
   background-color: white;
   border: none;
+}
+
+/* Footer */
+footer {
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  margin: auto auto 1rem auto;
+}
+
+footer a {
+  color: var(--color-blue-600);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--color-blue-500);
+  text-decoration: underline;
+}
+
+.play-again-btn {
+  padding: 0.5rem 2rem;
+  margin: 0 auto;
+  margin-top: 2rem;
 }

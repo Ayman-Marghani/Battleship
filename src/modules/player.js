@@ -19,7 +19,7 @@ import Gameboard from "./gameboard";
  */
 
 class Player {
-  constructor(isComputer, name = "Bot") {
+  constructor(isComputer, name = "Computer") {
     this.isComputer = isComputer;
     this.name = name;
     this.gameboard = new Gameboard();

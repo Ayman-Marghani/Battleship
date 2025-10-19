@@ -16,32 +16,12 @@ function removeChildren(elem) {
 }
 function hideElem(elem) {
   if (elem) {
-    if (elem.classList.contains('ship-elem')) {
-      elem.classList.add('hidden-ship');
-    }
-    else {
-      elem.classList.add('hidden-elem');
-    }
+    elem.classList.add('hidden-elem');
   }
 }
 function showElem(elem) {
   if (elem) {
-    if (elem.classList.contains('ship-elem')) {
-      elem.classList.remove('hidden-ship');
-    }
-    else {
-      elem.classList.remove('hidden-elem');
-    }
-  }
-}
-function changeFlexDirection(elem) {
-  if (elem) {
-    if (elem.style.flexDirection === 'column') {
-      elem.style.flexDirection = 'row';
-    }
-    else {
-      elem.style.flexDirection = 'column';
-    }
+    elem.classList.remove('hidden-elem');
   }
 }
 // ## Board functions
@@ -59,27 +39,54 @@ function renderEmptyBoard(boardElem) {
 }
 // ### Side Ships functions
 function addSideShipsToDOM(shipsContainerElem) {
-  if (shipsContainerElem) {
-    shipsContainerElem.style.flexDirection = 'column';
-    const shipsSizes = [5, 4, 3, 3, 2];
-    for (const size of shipsSizes) {
-      const newShipElem = document.createElement('div');
-      newShipElem.classList.add('ship-elem');
-      newShipElem.style.flexDirection = 'row';
-      // Ship Cells
-      for (let i = 0; i < size; i++) {
-        const newCellElement = document.createElement('div');
-        newCellElement.classList.add(...['cell', 'ship']);
-        newShipElem.appendChild(newCellElement);
-      }
-      shipsContainerElem.appendChild(newShipElem);
+  if (!shipsContainerElem) return;
+  
+  const shipTitleArr = ['Carrier', 'Battleship', 'Cruiser', 'Submarine', 'Destroyer'];
+  const shipSizeArr = [5, 4, 3, 3, 2];
+  
+  for (let i = 0; i < shipSizeArr.length; i++) {
+    const size = shipSizeArr[i];
+    const title = shipTitleArr[i];
+    
+    // Create ship-box container
+    const shipBox = document.createElement('div');
+    shipBox.classList.add('ship-box');
+    // Create ship-info section
+    const shipInfo = document.createElement('div');
+    shipInfo.classList.add('ship-info');
+    
+    const shipTitle = document.createElement('div');
+    shipTitle.classList.add('ship-title');
+    shipTitle.textContent = title;
+    
+    const shipSize = document.createElement('div');
+    shipSize.classList.add('ship-size');
+    shipSize.textContent = size;
+    
+    shipInfo.appendChild(shipTitle);
+    shipInfo.appendChild(shipSize);   
+    // Create ship-elem section (the cells container)
+    const shipElem = document.createElement('div');
+    shipElem.classList.add('ship-elem');
+    // Add ship cells
+    for (let j = 0; j < size; j++) {
+      const cell = document.createElement('div');
+      cell.classList.add('side-ship-cell');
+      shipElem.appendChild(cell);
     }
+    // Assemble the ship-box
+    shipBox.appendChild(shipInfo);
+    shipBox.appendChild(shipElem);
+    
+    // Add to container
+    shipsContainerElem.appendChild(shipBox);
   }
 }
+
 function showSideShips(shipsContainerElem) {
   if (shipsContainerElem) {
     for (const shipElem of shipsContainerElem.children) {
-      showElem(shipElem);
+      shipElem.classList.remove('placed');
     }
   }
 }
@@ -116,7 +123,6 @@ export {
   removeChildren,
   hideElem,
   showElem,
-  changeFlexDirection,
   renderEmptyBoard,
   addSideShipsToDOM,
   showSideShips,

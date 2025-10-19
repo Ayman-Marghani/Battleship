@@ -27,7 +27,10 @@ import {
   showFirstBoard,
   showSecondBoard,
   renderBoardsBanner,
-  hideShipPlacementBtns,
+  showFirstShipPlacementBtns,
+  showSecondShipPlacementBtns,
+  hideFirstShipPlacementBtns,
+  hideSecondShipPlacementBtns,
   getCellFromCoordsFirstBoard,
 } from './modules/UIFunctions';
 import {
@@ -165,13 +168,15 @@ function continueGameAfterShipsPlacement() {
   if (!isComputerMode) {
     removeEventListenersSecondBoard(handlePlaceShipSecondPlayer, handleChangeAxisSecondBoard, handleRandomizeSecondBoard);
   }
-  // Remove ship placement buttons
-  hideShipPlacementBtns();
 
   finishedPlacingShips = true;
   // Hide second board if computer mode
   if (isComputerMode) {
     hideSecondBoard();
+  }
+  else {
+    // Todo: Hide second board ship placement buttons
+    hideSecondShipPlacementBtns();
   }
   // Render Second board 
   renderSecondBoard(secondPlayer);
@@ -221,6 +226,7 @@ function endGame(winningPlayerName) {
   removeEventListenersForAttack(handleFirstPlayerAttack, handleSecondPlayerAttack);
 }
 function moveToPlayerNamesFormScreen(isComputerMode) {
+  console.log("moveToPlayerNamesFormScreen: ", isComputerMode);
   removeEventListenerGameModeBtns(handleGameModeClick);
   renderPlayerNamesFormScreen(isComputerMode);
   addEventListenerPlayerNamesForm(handlePlayerNamesFormSubmit);
@@ -228,7 +234,10 @@ function moveToPlayerNamesFormScreen(isComputerMode) {
 
 // ## Game mode screen functions
 function handleGameModeClick(event) {
-  isComputerMode = event.target.classList.contains('computer-mode-btn');
+  // Get the closest ancestor element with game-mode-btn class
+  const button = event.target.closest('.game-mode-btn');
+  if (!button) return;
+  isComputerMode = button.classList.contains('computer-mode-btn');
   moveToPlayerNamesFormScreen(isComputerMode);
 }
 function handlePlayerNamesFormSubmit(event) { 
@@ -251,9 +260,7 @@ function handlePlayerNamesFormSubmit(event) {
 function handlePlayerAttack(attacker, attackedPlayer) {
   return (event) => {
     // Make sure it's current player turn
-    if (curPlayer !== attacker.name) {
-      return;
-    }
+    if (curPlayer !== attacker.name) return;
     const curCell = event.target;
     // make sure it's an empty or ship cell
     if (isEmptyOrShipCell(curCell)) {      
@@ -290,6 +297,8 @@ function handlePlayerAttack(attacker, attackedPlayer) {
 function placeFirstPlayerShips() {
   // First player turn to place Ships
   renderBanner(`${firstPlayer.name}'s turn to place ships`);
+  // Todo: show first board ship placement buttons
+  showFirstShipPlacementBtns();
   // Event listener for first board
   addEventListenersFirstBoard(handlePlaceShipFirstPlayer, handleChangeAxisFirstBoard, handleRandomizeFirstBoard);
 }
@@ -304,6 +313,12 @@ function placeSecondPlayerShips() {
   }
   // Second player turn to place Ships
   renderBanner(`${secondPlayer.name}'s turn to place ships`);
+  // TODO: hide first board ship placement
+  hideFirstShipPlacementBtns();
+  // TODO: show second board ship placement buttons if 2 players mode
+  if (!isComputerMode) {
+    showSecondShipPlacementBtns();
+  }
   setTimeout( () => {
     if (isComputerMode) { // Computer mode
       placeComputerShips();
@@ -317,9 +332,7 @@ function placeSecondPlayerShips() {
 function handlePlaceShip(playerObj) {
   return (event) => {
     // If all ships are already placed return
-    if (finishedPlacingShips) {
-      return;
-    }
+    if (finishedPlacingShips) return;
     // Get the clicked cell and get its coordinates
     const curCell = event.target;
     const [x, y] = getCellCoords(curCell);
@@ -400,7 +413,7 @@ function computerAttack() {
   }
   // Attack first player
   const isHit = firstPlayer.receiveAttack(x, y);
-  console.log("Bot is attacking at: ", x, y);
+  console.log("Computer is attacking at: ", x, y);
   // Render first player board after being attacked
   renderFirstBoard(firstPlayer);
   if (isHit) { // Hit case
