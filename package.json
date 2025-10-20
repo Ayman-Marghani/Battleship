@@ -2,9 +2,8 @@
   "scripts": {
     "test": "jest",
     "dev": "webpack serve --mode=development",
-    "build": "webpack --mode=production",
-    "predeploy": "npm run build",
-    "deploy": "git subtree push --prefix dist origin gh-pages"
+    "build": "npx webpack --mode=production",
+    "deploy": "git checkout gh-pages && git merge main --no-edit && npm run build && git subtree push --prefix dist origin gh-pages && git checkout main"
   },
   "devDependencies": {
     "@babel/core": "^7.28.4",

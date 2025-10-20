@@ -6,7 +6,7 @@ A modern implementation of the classic Battleship game built with JavaScript. Th
 
 Battleship is a strategy type guessing game for two players. It is played on ruled grids on which each player's fleet of ships are marked. The locations of the fleets are concealed from the other player. Players alternate turns calling attacking the other player's ships, and the objective of the game is to destroy the opposing player's fleet.
 
-🔗 **[Live Demo](put link here)** 
+🔗 **[Live Demo](https://ayman-marghani.github.io/Battleship)** 
 
 ## Features
 
@@ -76,6 +76,7 @@ battleship/
 1. Clone the repository:
     ```bash
     git clone https://github.com/Ayman-Marghani/Battleship.git
+    cd Battleship
     ```
 2. Install dependencies:
     ```bash
@@ -85,11 +86,26 @@ battleship/
     ```bash
     npm run dev
     ```
-4. Build for production: TODO: add build script here
-5. Run tests:
+4. Run tests:
     ```bash
-    npm tes
+    npm test
     ```
+5. Build for production:
+    ```bash
+    npm run build
+    ```
+6. Deploy:
+    ```bash
+    # Make sure you're on main branch and all changes are committed
+    git checkout main
+    git add .
+    git commit -m "Your commit message"
+    git push origin main
+    
+    # Then run deploy script
+    npm run deploy
+    ```
+
 
 ## How to Play
 1. Choose game mode (Computer or 2-Player)
