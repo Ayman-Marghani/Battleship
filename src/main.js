@@ -157,7 +157,7 @@ function initGameScreen() {
     handleRandomizeSecondBoard = handleRandomize(secondPlayer);
   }
   // Render game Screen
-  renderGameScreen(isComputerMode);
+  renderGameScreen();
   // Render boards banner
   renderBoardsBanner(firstPlayer.name, secondPlayer.name);
   // First player place ships
@@ -283,7 +283,6 @@ function handlePlayerAttack(attacker, attackedPlayer) {
         // Switch to next player
         switchPlayerTurn(attackedPlayer.name);
       }
-      console.log("Checking end game status:", attackedPlayer.isLoser());
       // Check if game ended
       if (attackedPlayer.isLoser()) {
         // Call End game function 
@@ -410,7 +409,6 @@ function computerAttack() {
   }
   // Attack first player
   const isHit = firstPlayer.receiveAttack(x, y);
-  console.log("Computer is attacking at: ", x, y);
   // Render first player board after being attacked
   renderFirstBoard(firstPlayer);
   if (isHit) { // Hit case

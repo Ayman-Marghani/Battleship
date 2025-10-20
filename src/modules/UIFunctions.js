@@ -77,7 +77,7 @@ function renderGameModeScreen() {
   renderBanner('Select Game Mode');
   showElem(gameModeScreen);
 }
-function renderGameScreen(isComputerMode) {
+function renderGameScreen() {
   // Hide other screens
   hideElem(gameModeScreen);
   hideElem(playerNamesForm);
@@ -222,7 +222,6 @@ function hideSecondShipPlacementBtns() {
 
 // # Board cell functions
 function getCellFromCoordsFirstBoard(x, y) {
-  const BOARD_SIZE = 10;
   // Calculate index from coords
   const cellIndex = x * BOARD_SIZE + y;
   // Get cell from board.children
