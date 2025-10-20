@@ -2,39 +2,47 @@
   Josh's Custom CSS Reset
   https://www.joshwcomeau.com/css/custom-css-reset/
 */
+
 /* 1. Use a more-intuitive box-sizing model */
 *, *::before, *::after {
   box-sizing: border-box;
 }
+
 /* 2. Remove default margin */
 * {
   margin: 0;
 }
+
 /* 3. Enable keyword animations */
 @media (prefers-reduced-motion: no-preference) {
   html {
     interpolate-size: allow-keywords;
   }
 }
+
 body {
   /* 4. Add accessible line-height */
   line-height: 1.5;
   /* 5. Improve text rendering */
   -webkit-font-smoothing: antialiased;
 }
+
 /* 6. Improve media defaults */
 img, picture, video, canvas, svg {
   display: block;
   max-width: 100%;
 }
+
 /* 7. Inherit fonts for form controls */
 input, button, textarea, select {
   font: inherit;
 }
+
 /* 8. Avoid text overflows */
 p, h1, h2, h3, h4, h5, h6 {
   overflow-wrap: break-word;
 }
+
 /* 9. Improve line wrapping */
 p {
   text-wrap: pretty;
@@ -42,16 +50,20 @@ p {
 h1, h2, h3, h4, h5, h6 {
   text-wrap: balance;
 }
+
 /*
   10. Create a root stacking context
 */
 #root, #__next {
   isolation: isolate;
 }
+
 /************************************************************/
-/* Custom variables */
-:root{
-  /* Colors - Semantic */
+/* Custom Variables */
+/************************************************************/
+
+:root {
+  /* Colors - Base */
   --color-bg: #EEF3F9;
   --color-surface: #FFFFFF;
   --color-text: #111827;
@@ -62,28 +74,36 @@ h1, h2, h3, h4, h5, h6 {
   --color-input-border: #E5E7EB;
   --color-input-border-focus: #C8CDD4;
   
-  /* Colors - Blue scale */
+  /* Colors - Blue (Player 1) */
+  --color-blue-700: #1E40AF;
   --color-blue-600: #2563EB;
   --color-blue-500: #388AF6;
   --color-blue-400: #3B82F6;
   
-  /* Colors - Emerald scale */
+  /* Colors - Emerald (Player 2) */
+  --color-emerald-700: #047857;
   --color-emerald-600: #149E78;
   --color-emerald-500: #27B887;
   --color-emerald-400: #22AB7D;
   --color-emerald-300: #31D49E;
-
-  /* Font Sizes */
-  /* 
-  --font-: 0.95rem;
-  1.1rem;
-  1.2rem;
-  */
-  /* Font-weights */
-  --font-bold: 500;
-  /* --font-bolder: 700; */
   
-  /* Border radius */
+  /* Colors - Board */
+  --color-board-bg: #1E293B;
+  --color-board-grid: #2D4A6D;
+  --color-board-cell: #1E3A5F;
+  
+  /* Colors - States */
+  --color-hit: #DC2626;
+  --color-miss: #64748B;
+  --color-ship-inactive: #334155;
+  --color-ship-inactive-cell: #475569;
+  
+  /* Typography */
+  --font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-bold: 500;
+  
+  /* Border Radius */
+  --radius-sm: 0.2rem;
   --radius-md: 0.6rem;
   
   /* Spacing */
@@ -98,16 +118,21 @@ h1, h2, h3, h4, h5, h6 {
   --gradient-primary: linear-gradient(90deg, var(--color-blue-600) 0%, var(--color-emerald-400) 100%);
   --gradient-primary-hover: linear-gradient(90deg, var(--color-blue-400) 0%, var(--color-emerald-300) 100%);
 }
+
 /************************************************************/
 /* General Styles */
+/************************************************************/
+
 body {
   text-align: center;
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--font-family);
   background-color: var(--color-bg);
 }
+
 .hidden-elem {
   display: none !important;
 }
+
 h1 {
   font-size: 3.5rem;
   font-weight: var(--font-bold);
@@ -115,21 +140,27 @@ h1 {
   margin: var(--space-section);
   margin-top: 2rem;
 }
+
 button {
   cursor: pointer;
 }
+
 .banner {
   font-size: 1.5rem;
   color: var(--color-text-muted);
 }
+
 /************************************************************/
 /* Game Mode Screen */
+/************************************************************/
+
 .game-mode-screen {
   margin-top: var(--space-section);
   display: flex;
   gap: 2rem;
   justify-content: center;
 }
+
 .game-mode-btn {
   color: var(--color-surface);
   border: none;
@@ -140,31 +171,39 @@ button {
   align-items: center;
   gap: 1rem;
 }
-/* Game mode buttons icons */
+
 .game-mode-btn svg { 
   fill: none; 
   stroke: currentColor; 
   width: 5rem; 
   height: auto; 
 }
+
 .game-mode-btn-text {
   font-size: 1.2rem;
   font-weight: var(--font-bold);
 }
+
 .computer-mode-btn {
   background-color: var(--color-blue-600);
 }
+
 .computer-mode-btn:hover {
   background-color: var(--color-blue-500);
 }
+
 .players-mode-btn {
   background-color: var(--color-emerald-600);
 }
+
 .players-mode-btn:hover {
   background-color: var(--color-emerald-500);
 }
+
 /************************************************************/
-/* Player names form screen */
+/* Player Names Form Screen */
+/************************************************************/
+
 .player-names-form {
   background-color: var(--color-surface);
   width: fit-content;
@@ -178,16 +217,19 @@ button {
   flex-direction: column;
   gap: var(--space-form-gap);
 }
+
 .form-input-container {
   display: flex;
   flex-direction: column;
   align-items: start;
 }
+
 .player-names-form label {
   display: block;
   font-size: 0.95rem;
   font-weight: var(--font-bold);
 }
+
 .player-names-form input {
   font-size: 0.95rem;
   background-color: var(--color-input-bg);
@@ -197,10 +239,12 @@ button {
   border: 2px solid var(--color-input-border);
   outline: none;
 }
+
 .player-names-form input:focus {
   border-color: var(--color-input-border-focus);
 }
-/* Start Game button */
+
+/* Start Game & Play Again buttons */
 .player-names-form button,
 .play-again-btn {
   font-size: 1.1rem;
@@ -212,54 +256,65 @@ button {
   border: none;
   border-radius: var(--radius-md);
 }
+
 .player-names-form button:hover,
 .play-again-btn:hover {
   background-image: var(--gradient-primary-hover);
 }
-/* Play Again button */
+
 .play-again-btn {
   padding: 0.5rem 2rem;
   margin: 0 auto;
   margin-top: 2rem;
 }
+
 /************************************************************/
 /* Game Screen */
+/************************************************************/
+
 .game-screen {
   margin-top: 2rem;
-  min-height:75vh;
+  min-height: 75vh;
   display: flex;
   flex-direction: column;
 }
-.boards-container {
+
+.boards-fleets-container {
   display: flex;
   justify-content: center;
   gap: var(--space-section);
 }
-.board-subcontainer {
+
+.board-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-/* Boards title */
+
+/* Board titles */
 .board-title {
   font-size: 1.1rem;
   font-weight: var(--font-bold);
 }
+
 .first-board-title {
   color: var(--color-blue-600);
 }
+
 .second-board-title {
   color: var(--color-emerald-600);
 }
-/* TODO: Board */
+
+/* Game board */
 .board {
   display: grid;
   grid-template-columns: repeat(10, 2rem);
   width: fit-content;
-  background-color: #1E293B;
+  background-color: var(--color-board-bg);
   border-radius: var(--radius-md);
   padding: 1.5rem;
 }
+
 /* Ship placement buttons */
 .first-ship-placement-btns,
 .second-ship-placement-btns {
@@ -267,6 +322,7 @@ button {
   gap: 1rem;
   justify-content: center;
 }
+
 .ship-placement-btn {
   border: none;
   border-radius: var(--radius-md);
@@ -274,24 +330,31 @@ button {
   padding: 0.5rem 1rem;
   font-weight: var(--font-bold);
 }
+
 .first-ship-placement-btns button {
   background-color: var(--color-blue-600);
 }
+
 .first-ship-placement-btns button:hover {
   background-color: var(--color-blue-500);
 }
+
 .second-ship-placement-btns button {
   background-color: var(--color-emerald-600);
 }
+
 .second-ship-placement-btns button:hover {
   background-color: var(--color-emerald-500);
 }
+
 /************************************************************/
-/* Board cell styles */
+/* Board Cell Styles */
+/************************************************************/
+
 .cell {
   height: 2rem;
   width: 2rem;
-  border: 1px solid #2D4A6D;
+  border: 1px solid var(--color-board-grid);
 }
 
 .cell:hover,
@@ -299,114 +362,142 @@ button {
 .cell.hidden-cell:hover {
   background-color: var(--color-emerald-600);
 }
-/* Cell cases */
+
 .cell.ship {
   background-color: var(--color-blue-600);
 }
+
 .empty,
 .cell.hidden-cell {
-  background-color: #1E293B;
+  background-color: var(--color-board-bg);
 }
+
 .cell.hit,
 .cell.hidden-cell.hit {
-  background-color: #dc2626;
+  background-color: var(--color-hit);
 }
+
 .cell.miss,
 .cell.hidden-cell.miss {
-  background-color: #64748b;
+  background-color: var(--color-miss);
 }
+
 /************************************************************/
 /* Fleet */
+/************************************************************/
+
 .fleet-panel {
-  background-color: #1E293B;
+  background-color: var(--color-board-bg);
   border-radius: var(--radius-md);
-  color: #fff;
+  color: var(--color-surface);
   padding: 1rem;
 }
+
 .fleet-title {
   font-size: 0.95rem;
   font-weight: var(--font-bold);
   margin-bottom: 1rem;
 }
+
 .side-ships-container {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
-/* Ship Card */
+
+/* Ship card */
 .ship-box {
-  border-radius: 0.2rem;
+  border-radius: var(--radius-sm);
   padding: 0.75rem;
 }
+
 .ship-info {
   display: flex;
   justify-content: space-between;
   gap: 2rem;
   margin-bottom: 0.5rem;
 }
+
 .ship-title {
   font-size: 0.9rem;
   font-weight: var(--font-bold);
 }
+
 .ship-size {
   font-size: 0.75rem;
 }
+
 .ship-elem {
   display: flex;
   gap: 0.3rem;
   width: fit-content;
   height: fit-content;
 }
+
 .side-ship-cell {
   height: 1rem;
   width: 1rem;
-  border-radius: 0.2rem;
+  border-radius: var(--radius-sm);
 }
+
 .ship-direction {
   font-size: 2rem;
   height: 2.5rem;
 }
-/* First board */
+
+/* First board fleet */
 .first-fleet .ship-box {
   border: 2px solid var(--color-blue-600);
-  background-color:  #1E40AF;
+  background-color: var(--color-blue-700);
 }
+
 .first-fleet .side-ship-cell {
   background-color: var(--color-blue-600);
 }
-/* Second board */
+
+/* Second board fleet */
 .second-fleet .ship-box {
   border: 2px solid var(--color-emerald-600);
-  background-color:  #047857;
+  background-color: var(--color-emerald-700);
 }
+
 .second-fleet .side-ship-cell {
   background-color: var(--color-emerald-600);
 }
-/* Placed ship card styles */
+
+/* Placed ship state */
 .ship-box.placed {
-  background-color: #334155;
+  background-color: var(--color-ship-inactive);
   border: 2px solid transparent;
 }
+
 .placed .ship-title {
-  color: #64748B;
+  color: var(--color-miss);
 }
+
 .placed .ship-size {
-  color: #64748B;
+  color: var(--color-miss);
 }
+
 .placed .side-ship-cell {
-  background-color: #475569;
+  background-color: var(--color-ship-inactive-cell);
 }
-/************************************************/
+
+/************************************************************/
 /* Footer */
+/************************************************************/
+
 footer {
   font-size: 0.95rem;
   color: var(--color-text-muted);
   margin: auto auto 1rem auto;
 }
+
 footer a {
   color: var(--color-blue-600);
   text-decoration: none;
 }
+
 footer a:hover {
   color: var(--color-blue-500);
   text-decoration: underline;
