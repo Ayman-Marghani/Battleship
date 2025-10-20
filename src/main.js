@@ -1,3 +1,5 @@
+// Constants
+import { BOARD_SIZE } from './constants';
 // JS modules
 import Player from './modules/player';
 import {
@@ -51,7 +53,6 @@ import {
 import './styles.css';
 
 // # Global variables
-const GAME_BOARD_SIZE = 10;
 // ## Game mode and state variables
 let isComputerMode = null;
 let curPlayer = null;
@@ -100,12 +101,11 @@ function getHitCellNeighborCoords() {
   }
   return null;
 }
-
 function getRandomCoords() {
   for (let cnt = 0; cnt < 100; cnt++) {
     // Get random coordinates
-    const x = Math.floor(Math.random() * GAME_BOARD_SIZE);
-    const y = Math.floor(Math.random() * GAME_BOARD_SIZE);
+    const x = Math.floor(Math.random() * BOARD_SIZE);
+    const y = Math.floor(Math.random() * BOARD_SIZE);
     // Make sure the cell is empty or ship
     const cell = getCellFromCoordsFirstBoard(x, y);
     if (isEmptyOrShipCell(cell)) {

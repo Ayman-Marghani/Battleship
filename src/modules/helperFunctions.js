@@ -1,8 +1,8 @@
-const GAME_BOARD_SIZE = 10;
+import { BOARD_SIZE, SHIP_NAMES, SHIP_LENGTHS, SHIPS_COUNT } from "../constants";
 // # General functions
 function isCoordValid(x, y) {
   // Invalid coordinates (out of board)
-  if (x < 0 || x >= GAME_BOARD_SIZE || y < 0 || y >= GAME_BOARD_SIZE) {
+  if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) {
     return false;
   }
   return true;
@@ -41,12 +41,9 @@ function renderEmptyBoard(boardElem) {
 function addSideShipsToDOM(shipsContainerElem) {
   if (!shipsContainerElem) return;
   
-  const shipTitleArr = ['Carrier', 'Battleship', 'Cruiser', 'Submarine', 'Destroyer'];
-  const shipSizeArr = [5, 4, 3, 3, 2];
-  
-  for (let i = 0; i < shipSizeArr.length; i++) {
-    const size = shipSizeArr[i];
-    const title = shipTitleArr[i];
+  for (let i = 0; i < SHIPS_COUNT; i++) {
+    const size = SHIP_LENGTHS[i];
+    const title = SHIP_NAMES[i];
     
     // Create ship-box container
     const shipBox = document.createElement('div');
@@ -112,8 +109,8 @@ function getCellCoords(cell) {
   // Get index of cell
   const index = Number(cell.getAttribute('index'));
   // Calc x and y coordinates
-  const x = Math.floor(index / GAME_BOARD_SIZE);
-  const y = index % GAME_BOARD_SIZE;
+  const x = Math.floor(index / BOARD_SIZE);
+  const y = index % BOARD_SIZE;
   return [x, y];
 }
 
