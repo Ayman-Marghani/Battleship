@@ -1,3 +1,4 @@
+import { BOARD_SIZE } from '../constants';
 // Import Helper functions
 import {
   removeChildren,
@@ -153,13 +154,12 @@ function changeSideShipsAxisSecond() {
 
 // ## Game board functions
 function renderBoard(boardElem) {
-  const GAME_BOARD_SIZE = 10;
   return (playerObj) => {
     const gamebaord = playerObj.getBoard();
-    for (let i = 0; i < GAME_BOARD_SIZE; i++) {
-      for (let j = 0; j < GAME_BOARD_SIZE; j++) {
+    for (let i = 0; i < BOARD_SIZE; i++) {
+      for (let j = 0; j < BOARD_SIZE; j++) {
         // Calculate cell index
-        const cellIndex = i * GAME_BOARD_SIZE + j;
+        const cellIndex = i * BOARD_SIZE + j;
         if (gamebaord[i][j] === 'X') { // Ship cell
           editCellType(boardElem, cellIndex, 'ship');
         }
@@ -222,9 +222,9 @@ function hideSecondShipPlacementBtns() {
 
 // # Board cell functions
 function getCellFromCoordsFirstBoard(x, y) {
-  const GAME_BOARD_SIZE = 10;
+  const BOARD_SIZE = 10;
   // Calculate index from coords
-  const cellIndex = x * GAME_BOARD_SIZE + y;
+  const cellIndex = x * BOARD_SIZE + y;
   // Get cell from board.children
   const cell = firstBoardElem.children[cellIndex];
   return cell;
