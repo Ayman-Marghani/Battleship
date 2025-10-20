@@ -1,4 +1,4 @@
-import {BOARD_SIZE, SHIP_LENGTHS, SHIP_NAMES, SHIPS_COUNT} from '../constants';
+import {BOARD_SIZE, SHIP_LENGTHS} from '../constants';
 import Ship from './ship';
 import {isCoordValid} from './helperFunctions';
 
@@ -32,7 +32,7 @@ class Gameboard {
     this.testMatrix = Array.from({length: BOARD_SIZE}, () => Array(BOARD_SIZE).fill('-')); 
     this.shipsArr = [];
     this.shipsCoords = [];
-    this.shipsHorizontal = Array(SHIPS_COUNT).fill(true);
+    this.shipsHorizontal = Array(SHIP_LENGTHS.length).fill(true);
   }
 
   // Helper methods
@@ -177,7 +177,7 @@ class Gameboard {
    * Continues attempting placement until all ships are successfully positioned.
    */
   randomizeShips() {
-    for (let i = 0; i < SHIPS_COUNT; i++) {
+    for (let i = 0; i < SHIP_LENGTHS.length; i++) {
       this.shipsHorizontal[i] = Math.random() < 0.5;
       let isPlaced = null;
       do {
@@ -195,7 +195,7 @@ class Gameboard {
    * @returns {boolean[]} Array of booleans; true at index i means ship i is placed.
    */
   getIsShipPlacedArr() {
-    const isPlacedArr = Array(SHIPS_COUNT).fill(false);
+    const isPlacedArr = Array(SHIP_LENGTHS.length).fill(false);
     for (let i = 0; i < this.shipsArr.length; i++) {
       isPlacedArr[i] = true;
     }
@@ -208,7 +208,7 @@ class Gameboard {
    * @returns {boolean} True if all ships placed, false otherwise.
    */
   isAllShipsPlaced() {
-    return this.shipsArr.length === SHIPS_COUNT;
+    return this.shipsArr.length === SHIP_LENGTHS.length;
   }
 
   // Attack methods

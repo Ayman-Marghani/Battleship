@@ -1,4 +1,4 @@
-import { BOARD_SIZE, SHIP_NAMES, SHIP_LENGTHS, SHIPS_COUNT } from "../constants";
+import { BOARD_SIZE, SHIP_NAMES, SHIP_LENGTHS } from "../constants";
 
 /************************************************************/
 /* Validation Functions */
@@ -83,7 +83,7 @@ function renderEmptyBoard(boardElem) {
 function addSideShipsToDOM(shipsContainerElem) {
   if (!shipsContainerElem) return;
   
-  for (let i = 0; i < SHIPS_COUNT; i++) {
+  for (let i = 0; i < SHIP_LENGTHS.length; i++) {
     const size = SHIP_LENGTHS[i];
     const title = SHIP_NAMES[i];
     
