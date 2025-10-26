@@ -129,10 +129,6 @@ body {
   background-color: var(--color-bg);
 }
 
-.hidden-elem {
-  display: none !important;
-}
-
 h1 {
   font-size: 3.5rem;
   font-weight: var(--font-bold);

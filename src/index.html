@@ -5,14 +5,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Battleship Game</title>
+  <!-- Ensure hidden state before JS/CSS loads -->
+  <style>
+    .hidden-elem { display: none !important; }
+  </style>
 </head>
 
 <body>
-  <h1>BATTLESHIP</h1>
+  <h1></h1>
   <div class="banner"></div>
 
   <!-- Game Mode Screen -->
-  <div class="game-mode-screen">
+  <div class="game-mode-screen hidden-elem">
     <!-- Computer mode button -->
     <button class="game-mode-btn computer-mode-btn">
       <svg viewBox="0 0 24 24">

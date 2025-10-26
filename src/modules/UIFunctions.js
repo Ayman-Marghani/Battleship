@@ -11,6 +11,7 @@ import {
 } from './helperFunctions';
 
 // DOM elements 
+const pageHeading = document.querySelector("h1");
 const bannerElem = document.querySelector(".banner");
 // Screens
 const gameModeScreen = document.querySelector(".game-mode-screen");
@@ -40,6 +41,7 @@ function renderBanner(text) {
 
 // ## Render Screens functions
 function initialRender() {
+  pageHeading.textContent = 'BATTLESHIP';
   renderEmptyBoard(firstBoardElem);
   renderEmptyBoard(secondBoardElem);
   // Render ships on the side of each board
