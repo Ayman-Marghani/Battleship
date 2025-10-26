@@ -101,9 +101,15 @@ battleship/
     git add .
     git commit -m "Your commit message"
     git push origin main
+
+    # Switch to the deployment branch and sync changes from main 
+    git checkout gh-pages && git merge main --no-edit  
     
-    # Then run deploy script
+    # Run the deployment script
     npm run deploy
+
+    # Switch back to main branch
+    git checkout main
     ```
 
 
